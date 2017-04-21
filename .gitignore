@@ -1,0 +1,7 @@
+*.pyc
+*/*.pyc
+__pycache__
+*/__pycache__
+dataset
+.idea/
+.python-version
