@@ -1,12 +1,7 @@
-import os
 from PyQt5.QtWidgets import QMainWindow
-from PyQt5.uic import loadUiType
+from .keyboard_ui import Ui_KeyboardWindow
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-xmlPath = "{}/keyboard.ui".format(dir_path)
-uiKeyboard, _ = loadUiType(xmlPath)
-
-class KeyboardWindow(QMainWindow, uiKeyboard):
+class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def __init__(self):
     QMainWindow.__init__(self)
     self.setupUi(self)
