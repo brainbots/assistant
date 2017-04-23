@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from keyboard import config
 from .components import FlashingBox
 
 class Ui_KeyboardWindow(object):
@@ -24,16 +23,16 @@ class Ui_KeyboardWindow(object):
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName("gridLayout")
-        self.top_left = FlashingBox(self.centralWidget, config.FREQ[0], config.COLOR[0])
+        self.top_left = FlashingBox(self.centralWidget)
         self.top_left.setObjectName("top_left")
         self.gridLayout.addWidget(self.top_left, 0, 0, 1, 1)
-        self.top_right = FlashingBox(self.centralWidget, config.FREQ[1], config.COLOR[1])
+        self.top_right = FlashingBox(self.centralWidget)
         self.top_right.setObjectName("top_right")
         self.gridLayout.addWidget(self.top_right, 0, 1, 1, 1)
-        self.bottom_left = FlashingBox(self.centralWidget, config.FREQ[2], config.COLOR[2])
+        self.bottom_left = FlashingBox(self.centralWidget)
         self.bottom_left.setObjectName("bottom_left")
         self.gridLayout.addWidget(self.bottom_left, 1, 0, 1, 1)
-        self.bottom_right = FlashingBox(self.centralWidget, config.FREQ[3], config.COLOR[3])
+        self.bottom_right = FlashingBox(self.centralWidget)
         self.bottom_right.setObjectName("bottom_right")
         self.gridLayout.addWidget(self.bottom_right, 1, 1, 1, 1)
         self.vertLayout.addLayout(self.gridLayout)
@@ -53,7 +52,7 @@ class Ui_KeyboardWindow(object):
         self.lblCmd.setWordWrap(True)
         self.lblCmd.setObjectName("lblCmd")
         self.horzLayout.addWidget(self.lblCmd)
-        self.undo = FlashingBox(self.centralWidget, config.FREQ[4], config.COLOR[4])
+        self.undo = FlashingBox(self.centralWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
