@@ -1,24 +1,6 @@
 import numpy as np
-from scipy.signal import butter, lfilter
-from sklearn.metrics import confusion_matrix
-import matplotlib.pyplot as plt
-import itertools
-from scipy import stats
-import assisstant.keyboard.classification.rcca as rcca
-
-#signal processing part
-def butter_bandpass(lowcut, highcut, fs, order=5):
-    fnyq = 0.5 * fs
-    low = lowcut / fnyq
-    high = highcut / fnyq
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
-
-
-def butter_bandpass_filter(data, lowcut = 6, highcut= 42, fs=128, order=5):
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
+from keyboard.preprocessing import butter
+from . import rcca
 
 #Returns a list of matrices where each row in each matrix is a sin or cos with frequency = freqs[i] , the number of harmonics = Nharmonics and row length = sample_length 
 def getArtificialRefSignal(freqs,Nharmonics,n_secs,fs):
@@ -45,10 +27,9 @@ def getBestFrequency(eeg_data,ref_data):
             bestfreq = i
     return bestfreq+1
 
-def ccaClassify(sample):
-    freqs = np.array([12.195121951219512,10,8.620689655172415,7.575757575757576,6.666666666666667])
-    n_secs = 5
+def classify(sample, freqs, duration):
+    freqs = np.array(freqs)
     n_harmonics = 3
-    ref = getArtificialRefSignal(freqs,n_harmonics,n_secs,128)
-    sample = butter_bandpass_filter(sample)
+    ref = getArtificialRefSignal(freqs, n_harmonics, duration, 128)
+    sample = butter.filter(sample)
     return getBestFrequency(sample, ref)
