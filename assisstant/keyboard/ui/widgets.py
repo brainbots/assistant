@@ -11,3 +11,19 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
       box.setColor(config.COLOR[index])
+
+  def flash(self):
+    for box in self.boxes:
+      box.startFlashing()
+
+  def unflash(self):
+    for box in self.boxes:
+      box.stopFlashing()
+
+  def flash_handler(self, value):
+    if value:
+      print("Flash: on")
+      self.flash()
+    else:
+      print("Flash: off")
+      self.unflash()
