@@ -5,8 +5,8 @@ from emokit.emotiv import Emotiv
 from . import virtual, headset
 
 def run(read, dev, collect_time):
-  signals, quality =  read(dev, collect_time)
-  return (signals, quality)
+  sample, quality =  read(dev, collect_time)
+  return (sample, quality)
 
 class Device(QObject):
   collect_signal = pyqtSignal(bool, tuple)
