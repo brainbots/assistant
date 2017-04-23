@@ -1,46 +1,43 @@
-# -*- coding: utf-8 -*-
 import concurrent.futures as cf
 import time
+from PyQt5.QtCore import QObject, pyqtSignal
 from emokit.emotiv import Emotiv
-import virtual, headset
+from . import virtual, headset
 
-def run(callback, collect_time, sleep_time):
-  with Emotiv() as dev:
-    while True:
-      callback(collecting=True, data=None)
-      data, _quality =  headset.read(dev, collect_time)
-      callback(collecting=False, data=data)
-      time.sleep(sleep_time)
+def run(read, dev, collect_time):
+  signals, quality =  read(dev, collect_time)
+  return (signals, quality)
 
-def run_virt(callback, collect_time, sleep_time):
-  while True:
-    callback(collecting=True, data=None)
-    data, _quality = virtual.read(None, collect_time)
-    callback(collecting=False, data=data)
-    time.sleep(sleep_time)
+class Device(QObject):
+  collect_signal = pyqtSignal(bool, tuple)
 
-class Device(object):
-  def __init__(self, collect_time, sleep_time, callback=None, virtual=False):
+  def __init__(self, collect_time, callback=None, is_virtual=False, parent=None):
+    super(Device, self).__init__(parent)
     self.callback = callback
-    self.virtual = virtual
+    self.virtual = is_virtual
     self.future = None
     self.collect_time = collect_time
-    self.sleep_time = sleep_time
+    self.read_func = virtual.read if self.virtual else headset.read
+    self.dev = None if self.virtual else Emotiv()
     print("Device: open")
 
-  def start(self):
-    with cf.ProcessPoolExecutor() as exe:
-      run_func = run_virt if self.virtual else run
-      self.future = exe.submit(run_func, self.callback, collect_time, sleep_time)
-      self.future.add_done_callback(self.exit)
-      print("Device: start")
+  def collect(self):
+    print("Device: collect")
+    self.collect_signal.emit(True, ())
+    # We don't use python's 'with' block here
+    # because it calls ProcessPoolExecutor.shutdown(True)
+    # which is a blocking call thats freezes the main process
+    self.exe = cf.ProcessPoolExecutor()
+    self.future = self.exe.submit(run, self.read_func, self.dev, self.collect_time)
+    self.future.add_done_callback(self.onCollectEvent)
 
+  def onCollectEvent(self, future):
+    self.collect_signal.emit(False, future.result())
+  
   def stop(self):
-    if self.future:
-      if self.future.cancel():
-        self.future = None
-      return self.future.running() 
-
-  def exit(self, future):
-    print("Device: close")
-
+    if self.future and self.future.running():
+      print("Device: closing...")
+      self.future.cancel()
+      self.future = None
+      self.exe.shutdown(True)
+      print("Device: close")
