@@ -1,6 +1,8 @@
+import traceback
 from PyQt5.QtCore import Qt, QObject, QTimer, pyqtSignal
 from keyboard.input import device
 from keyboard import config
+from keyboard.classification import cca
 
 class Manager(QObject):
   flash_signal = pyqtSignal(bool)
@@ -19,6 +21,10 @@ class Manager(QObject):
   def device_update(self, collecting, data=None):
     self.flash_signal.emit(collecting)
     if not collecting:
-      signals, _quality = data
+      sample, _quality = data
+      try:
+        cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC)
+      except:
+        traceback.print_exc()
       QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
  
