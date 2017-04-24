@@ -13,15 +13,16 @@ class ApiaiBackend(NlpBackend):
 
 	def get_intent(self, query, session_id):
 		resp = self.make_request(query, session_id)
-		intent = self._parse_response(resp)
+		intent = self.__parse_response(resp)
 		return intent
 
-	def make_request(self, query, session_id):
-		if not self._check_connection():
+	def make_request(self, query, session_id, resetContexts=True):
+		if not self.__check_connection():
 			raise ConnectionError("No internet connection, please connect to the internet.")
-
+		
 		request = self.ai.text_request()
 		request.lang = 'en'		# optional, default value equal 'en'
+		request.resetContexts = resetContexts
 		request.session_id = session_id
 		request.query = query
 		response = request.getresponse()
@@ -29,7 +30,7 @@ class ApiaiBackend(NlpBackend):
 		data = json.loads(data.decode('utf-8'))
 		return data
 
-	def _parse_response(self, response):
+	def __parse_response(self, response):
 		if response["status"]["code"] == 200:
 			# Contexts and sessions are not handeled
 			data = {
@@ -45,7 +46,7 @@ class ApiaiBackend(NlpBackend):
 			# Not handled, need to know what other responses are available
 			pass
 
-	def _check_connection(self,host="8.8.8.8", port=53, timeout=3):
+	def __check_connection(self, host="8.8.8.8", port=53, timeout=3):
 		# Try to call host by ip address to prevent DNS lookup
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock.settimeout(timeout)
