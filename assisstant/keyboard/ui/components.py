@@ -9,6 +9,7 @@ class FlashingBox(QOpenGLWidget):
     self.brushes = [QBrush(Qt.black), QBrush(color)]
     self.index = 0
     self.enabled = False
+    self.chars = ""
 
   def setFreq(self, freq):
     self.freq = freq

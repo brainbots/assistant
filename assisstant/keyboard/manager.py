@@ -6,6 +6,7 @@ from keyboard.classification import cca
 
 class Manager(QObject):
   flash_signal = pyqtSignal(bool)
+  update_signal = pyqtSignal(int)
 
   def __init__(self, parent=None):
     super(Manager, self).__init__(parent)
@@ -22,9 +23,11 @@ class Manager(QObject):
     self.flash_signal.emit(collecting)
     if not collecting:
       sample, _quality = data
-      try:
-        cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC)
-      except:
-        traceback.print_exc()
+      # try:
+      #   result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC)
+      # except:
+      result = 0
+      #traceback.print_exc()
+      self.update_signal.emit(result)
       QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
- 
+

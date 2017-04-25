@@ -21,6 +21,17 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     for box in self.boxes:
       box.stopFlashing()
 
+  def update_handler(self, result):
+    new_chars = self.boxes[result].chars
+    if len(new_chars) > 1:
+      quarter = len(new_chars)//4
+      for index in range(4):
+        self.boxes[index].setChars(new_chars[index*quarter:index*quarter + quarter])
+    else:
+      self.lblCmd.setText(self.lblCmd.text() + new_chars)
+      for index in range(4):
+        self.boxes[index].setChars(config.CHARS[index])
+
   def flash_handler(self, value):
     if value:
       print("Flash: on")

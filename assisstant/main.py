@@ -12,5 +12,6 @@ if __name__ == '__main__':
   window.showMaximized()
   manager = Manager()
   manager.flash_signal.connect(window.flash_handler)
+  manager.update_signal.connect(window.update_handler)
   manager.start()
   sys.exit(app.exec())
