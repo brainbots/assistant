@@ -29,7 +29,7 @@ class FlashingBox(QOpenGLWidget):
   def paintEvent(self, event):
     painter = QPainter(self)
     painter.fillRect(event.rect(), self.brushes[self.index])
-    font = QFont("Mono", 72)
+    font = QFont("Mono", 50)
     painter.setFont(font)
     painter.drawText(event.rect(), Qt.TextWordWrap, self.chars)
 
