@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QFont
 from .components import FlashingBox
 
 class Ui_KeyboardWindow(object):
@@ -51,6 +52,8 @@ class Ui_KeyboardWindow(object):
         self.lblCmd.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.lblCmd.setWordWrap(True)
         self.lblCmd.setObjectName("lblCmd")
+        self.lblCmd.setFont(QFont("Mono", 50))
+        self.lblCmd.setFrameStyle(1)
         self.horzLayout.addWidget(self.lblCmd)
         self.undo = FlashingBox(self.centralWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
@@ -71,5 +74,5 @@ class Ui_KeyboardWindow(object):
     def retranslateUi(self, KeyboardWindow):
         _translate = QtCore.QCoreApplication.translate
         KeyboardWindow.setWindowTitle(_translate("KeyboardWindow", "Brain Keyboard"))
-        self.lblCmd.setText(_translate("KeyboardWindow", "test text"))
+        self.lblCmd.setText(_translate("KeyboardWindow", ""))
 

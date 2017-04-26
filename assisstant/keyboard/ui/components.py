@@ -32,7 +32,7 @@ class FlashingBox(QOpenGLWidget):
     painter.fillRect(event.rect(), self.brushes[self.index])
     font = QFont("Mono", 50)
     painter.setFont(font)
-    painter.drawText(event.rect(), Qt.TextWordWrap, self.chars)
+    painter.drawText(event.rect(), Qt.TextWordWrap | Qt.AlignCenter, self.chars)
 
   def startFlashing(self):
     self.index = 0
