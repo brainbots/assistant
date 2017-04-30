@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPainter, QBrush, QFont
+from PyQt5.QtGui import QPainter, QBrush, QFont, QPen, QColor
 
 class FlashingBox(QOpenGLWidget):
   def __init__(self, parent, freq=1, color=Qt.black):
@@ -31,6 +31,11 @@ class FlashingBox(QOpenGLWidget):
     painter = QPainter(self)
     painter.fillRect(event.rect(), self.brushes[self.index])
     font = QFont("Mono", 50)
+    if self.index == 0:
+      pen = QPen(QColor(Qt.yellow))
+    else:
+      pen = QPen(QColor(Qt.white))
+    painter.setPen(pen)
     painter.setFont(font)
     painter.drawText(event.rect(), Qt.TextWordWrap | Qt.AlignCenter, self.chars)
 
