@@ -32,76 +32,78 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.setupUi(self)
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.undo]
     self.gridLayout.layout()
-    self.labels = []
-    self.begin = 0
-    self.end = 63
-    for i in range(64):
-      x = CustomLabel(self, 55)
-      x.setText(chr(i + 65))
-      x.setStyleSheet("QLabel { color : white; }")
-      x.setAttribute(Qt.WA_TranslucentBackground)
-      x.setAlignment(Qt.AlignCenter|Qt.AlignVCenter)
-      x.show()
-      self.labels.append(x)
+    self.labels = [list()]
+    self.row, self.col, self.interval = 0, 0, 8
+
+    for i in range(self.interval):
+      self.labels.append(list())
+      for j in range(self.interval):
+        x = CustomLabel(self, 55)
+        x.setText(chr(i*self.interval + j + 65))
+        x.setStyleSheet("QLabel { color : white; }")
+        x.setAttribute(Qt.WA_TranslucentBackground)
+        x.setAlignment(Qt.AlignCenter|Qt.AlignVCenter)
+        x.show()
+        self.labels[i].append(x)
 
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
       box.setColor(config.COLOR[index])
 
   def update_handler(self, result):
-    newInterval = (self.end-self.begin+1)//4
-    if newInterval == 1:
-      self.lblCmd.setText(self.lblCmd.text() + self.labels[self.begin + result].text())
-      self.begin = 0
-      self.end = 63
+    self.interval //= 2
+    if self.interval == 1:
+      if result == 0:
+        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
+      elif result == 1:
+        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col+1].text())
+      elif result == 2:
+        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row+1][self.col].text())
+      elif result == 3:
+        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row+1][self.col+1].text())
+
+      self.row, self.col, self.interval = 0, 0, 8
+
     else:
-      self.begin = self.begin + result*newInterval
-      self.end = self.begin + newInterval - 1
+      if result == 0:
+        pass
+      elif result == 1:
+        self.col += self.interval
+      elif result == 2:
+        self.row += self.interval
+      elif result == 3:
+        self.row += self.interval
+        self.col += self.interval
 
   def animate(self):
-    interval = self.end-self.begin+1
-    quarter = interval//4
-    row = int(sqrt(quarter))
-    col = int(sqrt(quarter))
+    label_width = self.gridLayout.geometry().width()//self.interval
+    label_height = self.gridLayout.geometry().height()//self.interval
 
-    layout_width = self.gridLayout.geometry().width()
-    layout_height = self.gridLayout.geometry().height()
-    label_width = layout_width//(row*2)
-    label_height = layout_height//(col*2)
-
-    duration = 200
-
-    for label in self.labels:
-      label.hide()
-
-    for index in range(self.begin, self.end + 1):
-      self.labels[index].show()
+    # TODO: Don't hide the labels that will remain
+    for i in range(8):
+      for j in range(8):
+        self.labels[i][j].hide()
 
     animationGroup = QParallelAnimationGroup(self)
-    for boxi in range(2):
-      for boxj in range(2):
-        for i in range(row):
-          for j in range(col):
-            x = self.labels[self.begin + (2*boxi + boxj) * quarter + i*row + j]
-            if interval == 64:
-              x.set_font_size(55)
-              x.setGeometry(QRect(label_width * j + boxj*layout_width/2,
-                                  label_height * i + boxi*layout_height/2,
-                                  label_width, label_height))
-            else:
-              animation = QPropertyAnimation(x, b'geometry', self)
-              animation.setDuration(duration)
-              animation.setStartValue(x.geometry())
-              animation.setEndValue(QRect(label_width * j + boxj*layout_width/2,
-                                          label_height * i + boxi*layout_height/2,
-                                          label_width, label_height))
-              animationGroup.addAnimation(animation)
+    for i in range(self.interval):
+      for j in range(self.interval):
+        x = self.labels[i + self.row][j + self.col]
+        x.show()
+        if self.interval == 8:
+          x.set_font_size(55)
+          x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
+        else:
+          animation = QPropertyAnimation(x, b'geometry', self)
+          animation.setDuration(config.ANIMATION_DURATION)
+          animation.setStartValue(x.geometry())
+          animation.setEndValue(QRect(label_width * j, label_height * i, label_width, label_height))
+          animationGroup.addAnimation(animation)
 
-              animation = QPropertyAnimation(x, b'font_size', self)
-              animation.setDuration(duration)
-              animation.setStartValue(x.font_size)
-              animation.setEndValue(min(label_width, label_height)/1.5)
-              animationGroup.addAnimation(animation)
+          animation = QPropertyAnimation(x, b'font_size', self)
+          animation.setDuration(config.ANIMATION_DURATION)
+          animation.setStartValue(x.font_size)
+          animation.setEndValue(min(label_width, label_height)/1.5)
+          animationGroup.addAnimation(animation)
 
     animationGroup.start()
 

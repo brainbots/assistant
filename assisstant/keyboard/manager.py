@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QObject, QTimer, pyqtSignal
 from keyboard.input import device
 from keyboard import config
 from keyboard.classification import cca
+from random import randint
 
 class Manager(QObject):
   flash_signal = pyqtSignal(bool)
@@ -26,7 +27,7 @@ class Manager(QObject):
       # try:
       #   result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC)
       # except:
-      result = 0
+      result = randint(0, 3)
       #traceback.print_exc()
       self.update_signal.emit(result)
       QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)

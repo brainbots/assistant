@@ -5,8 +5,4 @@ FREQ    =   [12.00, 10.00, 8.57, 7.50, 6.67]
 COLOR   =   [Qt.yellow, Qt.blue, Qt.gray, Qt. green, Qt.white]
 TIME_FLASH_SEC  =   2
 TIME_REST_SEC   =   1
-CHARS = ["1234567890-+*/.=",
-         ":!@#$%^&()[]~,<>",
-         "\"'?\{}ABCDEFGHIJ",
-         "KMLNOPQRSTUVWXYZ",
-         "UNDO"]
+ANIMATION_DURATION = 300
