@@ -7,18 +7,14 @@ class FlashingBox(QOpenGLWidget):
     super(FlashingBox, self).__init__(parent)
     self.freq = freq
     self.brushes = [QBrush(Qt.black), QBrush(color)]
-    self.index = 0
+    self.index = 1
     self.enabled = False
-    self.chars = ""
 
   def setFreq(self, freq):
     self.freq = freq
 
   def setColor(self, color):
     self.brushes[1] = QBrush(color)
-
-  def setChars(self, chars):
-    self.chars = chars
 
   def timerEvent(self, event):
     if self.enabled:
@@ -30,14 +26,6 @@ class FlashingBox(QOpenGLWidget):
   def paintEvent(self, event):
     painter = QPainter(self)
     painter.fillRect(event.rect(), self.brushes[self.index])
-    font = QFont("Mono", 50)
-    if self.index == 0:
-      pen = QPen(QColor(Qt.yellow))
-    else:
-      pen = QPen(QColor(Qt.white))
-    painter.setPen(pen)
-    painter.setFont(font)
-    painter.drawText(event.rect(), Qt.TextWordWrap | Qt.AlignCenter, self.chars)
 
   def startFlashing(self):
     self.index = 0
@@ -50,5 +38,3 @@ class FlashingBox(QOpenGLWidget):
     self.enabled=False
     self.index = 0
     self.update()
-
- 
