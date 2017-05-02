@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import QMainWindow, QLabel
-from PyQt5.QtCore import QRect, Qt, QTimer, QPropertyAnimation, pyqtProperty, QParallelAnimationGroup
+from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup
 from PyQt5.QtGui import QFont
-from .keyboard_ui import Ui_KeyboardWindow
+from PyQt5.QtWidgets import QMainWindow, QLabel
+
 from keyboard import config
-from math import sqrt
+from .keyboard_ui import Ui_KeyboardWindow
 
 
 class CustomLabel(QLabel):
@@ -26,29 +26,33 @@ class CustomLabel(QLabel):
     self._font_size = size
     self.setFont(QFont("MONO", size))
 
+
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def __init__(self):
     super(KeyboardWindow, self).__init__()
     self.setupUi(self)
-    self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.undo]
     self.gridLayout.layout()
+
+    self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.undo]
+    for index, box in enumerate(self.boxes):
+      box.setFreq(config.FREQ[index])
+      box.setColor(config.COLOR[index])
+
     self.labels = [list()]
     self.row, self.col, self.interval = 0, 0, 8
 
     for i in range(self.interval):
       self.labels.append(list())
       for j in range(self.interval):
-        x = CustomLabel(self, 55)
-        x.setText(chr(i*self.interval + j + 65))
-        x.setStyleSheet("QLabel { color : white; }")
-        x.setAttribute(Qt.WA_TranslucentBackground)
-        x.setAlignment(Qt.AlignCenter|Qt.AlignVCenter)
-        x.show()
-        self.labels[i].append(x)
-
-    for index, box in enumerate(self.boxes):
-      box.setFreq(config.FREQ[index])
-      box.setColor(config.COLOR[index])
+        # TODO: Use proper font size
+        label = CustomLabel(self, 55)
+        # TODO: Use preset characters
+        label.setText(chr(i * self.interval + j + 65))
+        label.setStyleSheet("QLabel { color : white; }")
+        label.setAttribute(Qt.WA_TranslucentBackground)
+        label.setAlignment(Qt.AlignCenter)
+        label.show()
+        self.labels[i].append(label)
 
   def update_handler(self, result):
     self.interval //= 2
@@ -56,11 +60,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       if result == 0:
         self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
       elif result == 1:
-        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col+1].text())
+        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col + 1].text())
       elif result == 2:
-        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row+1][self.col].text())
+        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row + 1][self.col].text())
       elif result == 3:
-        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row+1][self.col+1].text())
+        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row + 1][self.col + 1].text())
 
       self.row, self.col, self.interval = 0, 0, 8
 
@@ -76,20 +80,21 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.col += self.interval
 
   def animate(self):
-    label_width = self.gridLayout.geometry().width()//self.interval
-    label_height = self.gridLayout.geometry().height()//self.interval
+    label_width = self.gridLayout.geometry().width() // self.interval
+    label_height = self.gridLayout.geometry().height() // self.interval
 
     # TODO: Don't hide the labels that will remain
     for i in range(8):
       for j in range(8):
         self.labels[i][j].hide()
 
-    animationGroup = QParallelAnimationGroup(self)
+    animation_group = QParallelAnimationGroup(self)
     for i in range(self.interval):
       for j in range(self.interval):
         x = self.labels[i + self.row][j + self.col]
         x.show()
         if self.interval == 8:
+          # TODO: Use proper font size
           x.set_font_size(55)
           x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
         else:
@@ -97,15 +102,15 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           animation.setDuration(config.ANIMATION_DURATION)
           animation.setStartValue(x.geometry())
           animation.setEndValue(QRect(label_width * j, label_height * i, label_width, label_height))
-          animationGroup.addAnimation(animation)
+          animation_group.addAnimation(animation)
 
           animation = QPropertyAnimation(x, b'font_size', self)
           animation.setDuration(config.ANIMATION_DURATION)
           animation.setStartValue(x.font_size)
-          animation.setEndValue(min(label_width, label_height)/1.5)
-          animationGroup.addAnimation(animation)
+          animation.setEndValue(min(label_width, label_height) / 1.5)
+          animation_group.addAnimation(animation)
 
-    animationGroup.start()
+    animation_group.start()
 
   def start(self):
     # TODO: Remove this delay, it waits for the grid initialization
