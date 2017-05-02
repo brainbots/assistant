@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup
+from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QLabel
 
@@ -97,16 +97,20 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           x.set_font_size(55)
           x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
         else:
+          easing_curve = QEasingCurve.InQuad
+
           animation = QPropertyAnimation(x, b'geometry', self)
           animation.setDuration(config.ANIMATION_DURATION)
           animation.setStartValue(x.geometry())
           animation.setEndValue(QRect(label_width * j, label_height * i, label_width, label_height))
+          animation.setEasingCurve(easing_curve)
           animation_group.addAnimation(animation)
 
           animation = QPropertyAnimation(x, b'font_size', self)
           animation.setDuration(config.ANIMATION_DURATION)
           animation.setStartValue(x.font_size)
           animation.setEndValue(min(label_width, label_height) / 1.5)
+          animation.setEasingCurve(easing_curve)
           animation_group.addAnimation(animation)
 
     animation_group.start()
