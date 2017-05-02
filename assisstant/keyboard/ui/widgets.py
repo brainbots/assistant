@@ -55,18 +55,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def update_handler(self, result):
     self.interval //= 2
-    if self.interval == 1:
-      if result == 0:
-        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
-      elif result == 1:
-        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col + 1].text())
-      elif result == 2:
-        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row + 1][self.col].text())
-      elif result == 3:
-        self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row + 1][self.col + 1].text())
-
+    if self.interval == 0:
+      self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
       self.row, self.col, self.interval = 0, 0, 8
-
     else:
       if result == 0:
         pass
@@ -120,7 +111,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     QTimer.singleShot(200, Qt.PreciseTimer, self.animate)
 
     # Brief pause before flashing, it makes the first second of recording corrupted
-    QTimer.singleShot(1000, Qt.PreciseTimer, self.flash)
+    if self.interval != 1:
+      QTimer.singleShot(1000, Qt.PreciseTimer, self.flash)
 
   def flash(self):
     for box in self.boxes:
