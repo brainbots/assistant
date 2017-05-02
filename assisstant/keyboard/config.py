@@ -6,3 +6,12 @@ COLOR   =   [Qt.yellow, Qt.blue, Qt.gray, Qt. green, Qt.white]
 TIME_FLASH_SEC  =   2
 TIME_REST_SEC   =   1
 ANIMATION_DURATION = 300
+CHARS = ["ABCDQRST",
+         "EFGHUVWX",
+         "IJKLYZ.,",
+         "MNOP\"'?⏎",
+         "1234$@^!",
+         "5678~_|&",
+         "90-+()[]",
+         "*/^=<>{}"]
+

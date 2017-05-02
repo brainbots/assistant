@@ -46,8 +46,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       for j in range(self.interval):
         # TODO: Use proper font size
         label = CustomLabel(self, 55)
-        # TODO: Use preset characters
-        label.setText(chr(i * self.interval + j + 65))
+        label.setText(config.CHARS[i][j])
         label.setStyleSheet("QLabel { color : white; }")
         label.setAttribute(Qt.WA_TranslucentBackground)
         label.setAlignment(Qt.AlignCenter)
