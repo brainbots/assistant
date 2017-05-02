@@ -38,6 +38,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       box.setFreq(config.FREQ[index])
       box.setColor(config.COLOR[index])
 
+    # TODO: Create label for the undo box
+
     self.labels = [list()]
     self.row, self.col, self.interval = 0, 0, 8
 
@@ -111,6 +113,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     QTimer.singleShot(200, Qt.PreciseTimer, self.animate)
 
     # Brief pause before flashing, it makes the first second of recording corrupted
+    # Don't flash if it's the last character
+    # TODO: this produces a very long pause after showing the last character
+    # TODO: This timer produces "timer has not been killed" warning
     if self.interval != 1:
       QTimer.singleShot(1000, Qt.PreciseTimer, self.flash)
 
