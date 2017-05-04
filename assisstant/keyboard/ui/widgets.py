@@ -67,19 +67,18 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def update_handler(self, result):
     self.interval //= 2
+    if result == 0:
+      pass
+    elif result == 1:
+      self.col += self.interval
+    elif result == 2:
+      self.row += self.interval
+    elif result == 3:
+      self.row += self.interval
+      self.col += self.interval
+
     if self.interval == 1:
       self.ui_pause.emit(True)
-      if result == 0:
-        pass
-      elif result == 1:
-        self.col += self.interval
-      elif result == 2:
-        self.row += self.interval
-      elif result == 3:
-        self.row += self.interval
-        self.col += self.interval
-    
-    if self.interval == 1:
       QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
       QTimer.singleShot(2000, Qt.PreciseTimer, self.resetCharacters)
     else:
