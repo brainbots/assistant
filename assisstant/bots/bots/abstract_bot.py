@@ -1,22 +1,13 @@
 from abc import ABC, abstractmethod, abstractproperty
 class AbstractBot(ABC):
-	# @abstractmethod
-	# @abstractproperty
-	# def id(self, id):
-	# 	pass
-
-	# @abstractmethod
-	def __init__(self, id):
+	def __init__(self, id, actions):
 		self.id = id
+		self.actions = actions
 
 	@abstractmethod
 	def validate_intent(self, intent):
-		pass
-
-	@abstractmethod
-	def validate_intent(self, intent):
-		pass
+		return
 
 	@abstractmethod
 	def execute(self, intent):
-		pass
+		return
