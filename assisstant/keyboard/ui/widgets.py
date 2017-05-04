@@ -73,7 +73,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.row += self.interval
         self.col += self.interval
     
-    self.animate()
+    QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
 
   def animate(self):
     label_width = self.gridLayout.geometry().width() // self.interval
