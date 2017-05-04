@@ -54,6 +54,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         label.show()
         self.labels[i].append(label)
 
+  def resizeEvent(self, event):
+    self.animate()
+
   def update_handler(self, result):
     self.interval //= 2
     if self.interval == 0:
@@ -69,6 +72,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       elif result == 3:
         self.row += self.interval
         self.col += self.interval
+    
+    self.animate()
 
   def animate(self):
     label_width = self.gridLayout.geometry().width() // self.interval
@@ -107,17 +112,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
     animation_group.start()
 
-  def start(self):
-    # TODO: Remove this delay, it waits for the grid initialization
-    QTimer.singleShot(200, Qt.PreciseTimer, self.animate)
-
-    # Brief pause before flashing, it makes the first second of recording corrupted
-    # Don't flash if it's the last character
-    # TODO: this produces a very long pause after showing the last character
-    # TODO: This timer produces "timer has not been killed" warning
-    if self.interval != 1:
-      QTimer.singleShot(1000, Qt.PreciseTimer, self.flash)
-
   def flash(self):
     for box in self.boxes:
       box.startFlashing()
@@ -128,8 +122,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def flash_handler(self, value):
     if value:
-      print("Flash: on")
-      self.start()
+      if not self.interval == 1:
+        print("Flash: on")
+        self.flash()
     else:
-      print("Flash: off")
-      self.unflash()
+      if not self.interval == 1:
+        print("Flash: off")
+        self.unflash()
