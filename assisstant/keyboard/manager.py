@@ -15,7 +15,7 @@ class Manager(QObject):
     self.device.collect_signal.connect(self.device_update)
 
   def start(self):
-    self.device.collect()
+    QTimer.singleShot(1000, Qt.PreciseTimer, self.device.collect)
 
   def stop(self):
     self.device.stop()
