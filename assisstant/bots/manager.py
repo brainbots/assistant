@@ -17,10 +17,12 @@ class BotManager:
 		return bots
 
 	def initialize_bots(self, bots):
+		id = 0
 		for module, classname in bots:
 			module = importlib.import_module(module)
 			bot_class = getattr(module, classname)
-			self.bots.append(bot_class())
+			self.bots.append(bot_class(id))
+			id += 1
 
 	def run_action(self, intent):
 		action = intent.action
@@ -31,4 +33,4 @@ class BotManager:
 					break
 				except Exception as e:
 					print(e)
-		# raise exception if no bot can process this intent
+		# TODO: Raise exception if no bot can process this intent
