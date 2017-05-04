@@ -34,7 +34,9 @@ class FlashingBox(QOpenGLWidget):
     self._timer = self.startTimer(delay, Qt.PreciseTimer)
 
   def stopFlashing(self):
-    self.killTimer(self._timer)
+    if self._timer:
+      self.killTimer(self._timer)
+    self._timer = None
     self.enabled=False
     self.index = 0
     self.update()
