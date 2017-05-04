@@ -1,15 +1,20 @@
 from .abstract_bot import AbstractBot
 
 class CalculatorBot(AbstractBot):
-	# id = 5
-	def __init__(self):
-		self.actions = ['calculate']
-		# self.id = 2
-		# super().id = 5
-		# print(self.id)
+	def __init__(self, id):
+		# TODO: Improve the manually-added calculator.calculate intent 
+		actions = ['calculator.calculate']
+		super().__init__(id, actions)
 
-	def validate_intent(self):
+	def validate_intent(self, intent):
+		# TODO: Handle sqrt and trignometric operations
 		pass
 
-	def execute(self):
-		pass
+	def execute(self, intent):
+		num_expr = intent.query_string
+		try:
+			result = eval(num_expr)
+			return str(result)
+		except Exception as e:
+			# Raise the exception e
+			raise
