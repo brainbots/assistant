@@ -1,4 +1,4 @@
-from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve
+from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, pyqtSignal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QLabel
 
@@ -28,6 +28,8 @@ class CustomLabel(QLabel):
 
 
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
+  ui_pause = pyqtSignal(bool) 
+
   def __init__(self):
     super(KeyboardWindow, self).__init__()
     self.setupUi(self)
@@ -57,12 +59,16 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def resizeEvent(self, event):
     self.animate()
 
+  def resetCharacters(self):
+    self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
+    self.row, self.col, self.interval = 0, 0, 8
+    self.updatePositions()
+    self.ui_pause.emit(False)
+
   def update_handler(self, result):
     self.interval //= 2
-    if self.interval == 0:
-      self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
-      self.row, self.col, self.interval = 0, 0, 8
-    else:
+    if self.interval == 1:
+      self.ui_pause.emit(True)
       if result == 0:
         pass
       elif result == 1:
@@ -73,7 +79,30 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.row += self.interval
         self.col += self.interval
     
-    QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
+    if self.interval == 1:
+      QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
+      QTimer.singleShot(2000, Qt.PreciseTimer, self.resetCharacters)
+    else:
+      QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
+
+
+  def updatePositions(self):
+    label_width = self.gridLayout.geometry().width() // self.interval
+    label_height = self.gridLayout.geometry().height() // self.interval
+
+    # TODO: Don't hide the labels that will remain
+    for i in range(8):
+      for j in range(8):
+        self.labels[i][j].hide()
+
+    animation_group = QParallelAnimationGroup(self)
+    for i in range(self.interval):
+      for j in range(self.interval):
+        x = self.labels[i + self.row][j + self.col]
+        x.show()
+        # TODO: Use proper font size
+        x.set_font_size(55)
+        x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
 
   def animate(self):
     label_width = self.gridLayout.geometry().width() // self.interval
@@ -121,11 +150,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       box.stopFlashing()
 
   def flash_handler(self, value):
+    if self.interval == 1:
+      return
     if value:
-      if not self.interval == 1:
-        print("Flash: on")
-        self.flash()
+      print("Flash: on")
+      self.flash()
     else:
-      if not self.interval == 1:
-        print("Flash: off")
-        self.unflash()
+      print("Flash: off")
+      self.unflash()

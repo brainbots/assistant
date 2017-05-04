@@ -13,9 +13,19 @@ class Manager(QObject):
     super(Manager, self).__init__(parent)
     self.device = device.Device(callback=self.device_update, collect_time=config.TIME_FLASH_SEC, is_virtual=True)
     self.device.collect_signal.connect(self.device_update)
+    self.paused = False
+
+  def pause_handler(self, paused):
+    self.paused = paused
+    print("Paused: ", paused)
+    if paused:
+      self.stop()
+    else:
+      self.start()
 
   def start(self):
-    QTimer.singleShot(1000, Qt.PreciseTimer, self.device.collect)
+    if not self.paused:
+      QTimer.singleShot(1000, Qt.PreciseTimer, self.device.collect)
 
   def stop(self):
     self.device.stop()
@@ -30,5 +40,6 @@ class Manager(QObject):
       result = randint(0, 3)
       #traceback.print_exc()
       self.update_signal.emit(result)
-      QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
+      if not self.paused:
+        QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
 

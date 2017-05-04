@@ -13,5 +13,6 @@ if __name__ == '__main__':
   manager = Manager()
   manager.flash_signal.connect(window.flash_handler)
   manager.update_signal.connect(window.update_handler)
+  window.ui_pause.connect(manager.pause_handler)
   manager.start()
   sys.exit(app.exec())
