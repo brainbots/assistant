@@ -8,7 +8,7 @@ class CalculatorBot(AbstractBot):
 
 	def validate_intent(self, intent):
 		# TODO: Handle sqrt and trignometric operations
-		pass
+		return True
 
 	def execute(self, intent):
 		num_expr = intent.query_string
