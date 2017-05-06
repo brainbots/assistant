@@ -33,7 +33,8 @@ class Manager(QObject):
     self.flash_signal.emit(collecting)
     if not collecting:
       sample, _quality = data
-      result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC)
+      result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC) - 1
+      print(result)
       #result = randint(0, 3)
       self.update_signal.emit(result)
       if not self.paused:
