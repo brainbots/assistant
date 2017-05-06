@@ -28,9 +28,9 @@ class BotManager:
 		action = intent.action
 		for bot in self.bots:
 			if action in bot.actions:
-				try:
-					bot.execute(intent)
-					break
-				except Exception as e:
-					print(e)
+				if bot.validate_intent(intent):
+					try:
+						return bot.execute(intent)
+					except Exception as e:
+						print(e)
 		# TODO: Raise exception if no bot can process this intent
