@@ -32,6 +32,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
+    self.initial_font = 12
     self.setupUi(self)
 
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.undo]
@@ -48,9 +49,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.labels.append(list())
       for j in range(self.interval):
         # TODO: Use proper font size
-        label = CustomLabel(self, 55)
+        label = CustomLabel(self, self.initial_font)
         label.setText(config.CHARS[i][j])
-        label.setStyleSheet("QLabel { color : white; }")
+        label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.5); }")
         label.setAttribute(Qt.WA_TranslucentBackground)
         label.setAlignment(Qt.AlignCenter)
         label.show()
@@ -100,7 +101,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         x = self.labels[i + self.row][j + self.col]
         x.show()
         # TODO: Use proper font size
-        x.set_font_size(55)
+        x.set_font_size(self.initial_font)
         x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
 
   def animate(self):
@@ -119,7 +120,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         x.show()
         if self.interval == 8:
           # TODO: Use proper font size
-          x.set_font_size(55)
+          x.set_font_size(self.initial_font)
           x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
         else:
           easing_curve = QEasingCurve.InQuad
@@ -134,7 +135,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           animation = QPropertyAnimation(x, b'font_size', self)
           animation.setDuration(config.ANIMATION_DURATION)
           animation.setStartValue(x.font_size)
-          animation.setEndValue(min(label_width, label_height) / 1.5)
+          animation.setEndValue(min(label_width, label_height) / 5)
           animation.setEasingCurve(easing_curve)
           animation_group.addAnimation(animation)
 

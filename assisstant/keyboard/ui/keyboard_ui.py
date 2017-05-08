@@ -22,7 +22,7 @@ class Ui_KeyboardWindow(object):
         self.vertLayout.setObjectName("vertLayout")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setSpacing(0)
+        self.gridLayout.setSpacing(80)
         self.gridLayout.setObjectName("gridLayout")
         self.top_left = FlashingBox(self.centralWidget)
         self.top_left.setObjectName("top_left")
