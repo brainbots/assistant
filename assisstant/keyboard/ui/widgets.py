@@ -32,7 +32,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
-    self.initial_font = 12
+    self.initial_font = 8
     self.setupUi(self)
 
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.undo]
@@ -51,7 +51,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         # TODO: Use proper font size
         label = CustomLabel(self, self.initial_font)
         label.setText(config.CHARS[i][j])
-        label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.5); }")
+        label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.3); }")
         label.setAttribute(Qt.WA_TranslucentBackground)
         label.setAlignment(Qt.AlignCenter)
         label.show()
@@ -135,7 +135,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           animation = QPropertyAnimation(x, b'font_size', self)
           animation.setDuration(config.ANIMATION_DURATION)
           animation.setStartValue(x.font_size)
-          animation.setEndValue(min(label_width, label_height) / 5)
+          animation.setEndValue(min(label_width, label_height) / 8)
           animation.setEasingCurve(easing_curve)
           animation_group.addAnimation(animation)
 
