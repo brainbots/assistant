@@ -10,7 +10,7 @@ class Manager(QObject):
 
   def __init__(self, parent=None):
     super(Manager, self).__init__(parent)
-    self.device = device.Device(callback=self.device_update, collect_time=config.TIME_FLASH_SEC, is_virtual=False)
+    self.device = device.Device(callback=self.device_update, collect_time=config.TIME_FLASH_SEC, is_virtual=True)
     self.device.collect_signal.connect(self.device_update)
     self.paused = False
 
@@ -33,9 +33,8 @@ class Manager(QObject):
     self.flash_signal.emit(collecting)
     if not collecting:
       sample, _quality = data
-      result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC) - 1
-      print(result)
-      #result = randint(0, 3)
+      #result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC) - 1
+      result = randint(0, 4)
       self.update_signal.emit(result)
       if not self.paused:
         QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)

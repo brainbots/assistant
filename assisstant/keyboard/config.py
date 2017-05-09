@@ -7,12 +7,24 @@ COLOR   =   [Qt.white, Qt.blue, Qt.green, Qt.red, Qt.black]
 TIME_FLASH_SEC  =   5
 TIME_REST_SEC   =   3
 ANIMATION_DURATION = 300
-CHARS = ["ABCDQRST",
-         "EFGHUVWX",
-         "IJKLYZ.,",
-         "MNOP\"'?⏎",
+GRIDLAYOUT_MARGIN = 100
+GRIDLAYOUT_SPACING = 200
+# CHARS = ["ABCDQRST",
+#          "EFGHUVWX",
+#          "IJKLYZ.,",
+#          "MNOP\"'?⏎",
+#          "1234$@^!",
+#          "5678~_|&",
+#          "90-+()[]",
+#          "*/^=<>{}"]
+
+
+
+CHARS = ["abcdqrst",
+         "efghuvwx",
+         "ijklyz.,",
+         "mnop\"'?⏎",
          "1234$@^!",
          "5678~_|&",
          "90-+()[]",
          "*/^=<>{}"]
-
