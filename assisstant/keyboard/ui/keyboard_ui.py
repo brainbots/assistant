@@ -18,11 +18,14 @@ class Ui_KeyboardWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.vertLayout = QtWidgets.QVBoxLayout()
         self.vertLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
-        self.vertLayout.setContentsMargins(0,0,0,0)
+        self.vertLayout.setContentsMargins(0, 0, 0, 0)
         self.vertLayout.setSpacing(0)
         self.vertLayout.setObjectName("vertLayout")
         self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setContentsMargins(config.GRIDLAYOUT_MARGIN,config.GRIDLAYOUT_MARGIN,config.GRIDLAYOUT_MARGIN, config.GRIDLAYOUT_MARGIN)
+        self.gridLayout.setContentsMargins(config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN)
         self.gridLayout.setSpacing(config.GRIDLAYOUT_SPACING)
         self.gridLayout.setObjectName("gridLayout")
         self.top_left = FlashingBox(self.centralWidget)

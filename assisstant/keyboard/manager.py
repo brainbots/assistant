@@ -36,8 +36,8 @@ class Manager(QObject):
     if not collecting:
       sample, _quality = data
       if self.is_virtual:
-      else:
         result = randint(0, 3)
+      else:
         result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC) - 1
       self.update_signal.emit(result)
       if not self.paused:

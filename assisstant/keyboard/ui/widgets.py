@@ -78,13 +78,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.row += self.interval
       self.col += self.interval
 
+    QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
+
     if self.interval == 1:
       self.ui_pause.emit(True)
-      QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
       QTimer.singleShot(2000, Qt.PreciseTimer, self.resetCharacters)
-    else:
-      QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
-
 
   def updatePositions(self):
     label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
@@ -97,7 +95,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
     animation_group = QParallelAnimationGroup(self)
     for pos in range(4):
-      shiftx , shifty ,idx_shiftx , idx_shifty = 0,0,0,0
+      shiftx, shifty, idx_shiftx, idx_shifty = 0, 0, 0, 0
       if pos == 0:
         shiftx = config.GRIDLAYOUT_MARGIN
         shifty = config.GRIDLAYOUT_MARGIN
@@ -120,7 +118,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           x = self.labels[i + self.row][j + self.col]
           x.show()
           x.set_font_size(self.initial_font)
-          x.setGeometry(QRect(label_width * j + shiftx , label_height * i + shifty , label_width, label_height))
+          x.setGeometry(QRect(label_width * j + shiftx, label_height * i + shifty, label_width, label_height))
 
   def animate(self):
     label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
@@ -133,23 +131,23 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
     animation_group = QParallelAnimationGroup(self)
     for pos in range(4):
-      shiftx , shifty ,idx_shiftx , idx_shifty = 0,0,0,0
+      shiftx, shifty, idx_shiftx, idx_shifty = 0, 0, 0, 0
       if pos == 0:
         shiftx = config.GRIDLAYOUT_MARGIN
         shifty = config.GRIDLAYOUT_MARGIN
       elif pos == 1:
         shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
         shifty = config.GRIDLAYOUT_MARGIN
-        idx_shiftx = self.interval //2
+        idx_shiftx = self.interval // 2
       elif pos == 2:
         shiftx = config.GRIDLAYOUT_MARGIN
         shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
-        idx_shifty = self.interval //2
+        idx_shifty = self.interval // 2
       elif pos == 3:
         shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
         shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
-        idx_shiftx = self.interval //2
-        idx_shifty = self.interval //2
+        idx_shiftx = self.interval // 2
+        idx_shifty = self.interval // 2
 
       for i in range(idx_shifty,self.interval//2 + idx_shifty):
         for j in range(idx_shiftx,self.interval//2 + idx_shiftx):
@@ -158,7 +156,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           if self.interval == 8:
             # TODO: Use proper font size
             x.set_font_size(self.initial_font)
-            x.setGeometry(QRect(label_width * j + shiftx , label_height * i + shifty , label_width, label_height))
+            x.setGeometry(QRect(label_width * j + shiftx, label_height * i + shifty, label_width, label_height))
           else:
             easing_curve = QEasingCurve.InQuad
             animation = QPropertyAnimation(x, b'geometry', self)
