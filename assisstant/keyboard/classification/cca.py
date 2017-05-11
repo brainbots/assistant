@@ -6,7 +6,7 @@ from . import rcca
 def getArtificialRefSignal(freqs,Nharmonics,n_secs,fs):
     t = np.linspace(0,n_secs,fs*n_secs)
     mat_list = np.empty(freqs.size - 1,dtype=object)
-    for i in range(freqs.size) - 1:
+    for i in range(freqs.size-1):
         Y = np.array([])
         for j in range(1,Nharmonics+1):
             jth_harmonic = np.sin(2*np.pi*freqs[i]*j*t)
