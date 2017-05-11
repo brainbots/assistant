@@ -35,7 +35,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.initial_font = 8
     self.setupUi(self)
 
-    self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.undo]
+    self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
       box.setColor(config.COLOR[index])
