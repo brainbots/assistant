@@ -1,3 +1,4 @@
+from math import ceil
 from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, pyqtSignal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QLabel
@@ -149,8 +150,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         idx_shiftx = self.interval // 2
         idx_shifty = self.interval // 2
 
-      for i in range(idx_shifty,self.interval//2 + idx_shifty):
-        for j in range(idx_shiftx,self.interval//2 + idx_shiftx):
+      for i in range(idx_shifty, ceil(self.interval/2) + idx_shifty):
+        for j in range(idx_shiftx, ceil(self.interval/2) + idx_shiftx):
           x = self.labels[i + self.row][j + self.col]
           x.show()
           if self.interval == 8:
