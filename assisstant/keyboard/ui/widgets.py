@@ -35,7 +35,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     super(KeyboardWindow, self).__init__()
     self.initial_font = 8
     self.setupUi(self)
-
+    self.target = None
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
@@ -62,6 +62,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.animate()
 
   def resetCharacters(self):
+    self.target = None
     self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
     self.row, self.col, self.interval = 0, 0, 8
     self.updatePositions()
@@ -83,6 +84,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
     if self.interval == 1:
       self.ui_pause.emit(True)
+      self.target = result
       QTimer.singleShot(2000, Qt.PreciseTimer, self.resetCharacters)
 
   def updatePositions(self):
@@ -132,6 +134,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
     animation_group = QParallelAnimationGroup(self)
     for pos in range(4):
+      if self.interval == 1 and pos != self.target:
+        continue
       shiftx, shifty, idx_shiftx, idx_shifty = 0, 0, 0, 0
       if pos == 0:
         shiftx = config.GRIDLAYOUT_MARGIN
@@ -163,7 +167,14 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
             animation = QPropertyAnimation(x, b'geometry', self)
             animation.setDuration(config.ANIMATION_DURATION)
             animation.setStartValue(x.geometry())
-            animation.setEndValue(QRect(label_width * j + shiftx , label_height * i +shifty , label_width, label_height))
+            if self.interval != 1:
+              animation.setEndValue(QRect(label_width * j + shiftx , label_height * i +shifty , label_width, label_height))
+            else:
+              grdWidth = self.gridLayout.geometry().width()
+              grdHeight = self.gridLayout.geometry().height()
+              lblWidth = grdWidth / 8
+              lblHeight = grdHeight / 2
+              animation.setEndValue(QRect((grdWidth-lblWidth) / 2, (grdHeight-lblHeight)/2, lblWidth, lblHeight))
             animation.setEasingCurve(easing_curve)
             animation_group.addAnimation(animation)
 
