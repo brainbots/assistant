@@ -5,8 +5,8 @@ from . import rcca
 #Returns a list of matrices where each row in each matrix is a sin or cos with frequency = freqs[i] , the number of harmonics = Nharmonics and row length = sample_length 
 def getArtificialRefSignal(freqs,Nharmonics,n_secs,fs):
     t = np.linspace(0,n_secs,fs*n_secs)
-    mat_list = np.empty(freqs.size - 1,dtype=object)
-    for i in range(freqs.size-1):
+    mat_list = np.empty(freqs.size,dtype=object)
+    for i in range(freqs.size):
         Y = np.array([])
         for j in range(1,Nharmonics+1):
             jth_harmonic = np.sin(2*np.pi*freqs[i]*j*t)
