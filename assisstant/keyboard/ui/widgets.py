@@ -33,7 +33,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
-    self.initial_font = 8
+    self.initial_font = 17
     self.setupUi(self)
     self.target = None
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
@@ -52,7 +52,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         # TODO: Use proper font size
         label = CustomLabel(self, self.initial_font)
         label.setText(config.CHARS[i][j])
-        label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.3); }")
+        label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.5); }")
         label.setAttribute(Qt.WA_TranslucentBackground)
         label.setAlignment(Qt.AlignCenter)
         label.show()

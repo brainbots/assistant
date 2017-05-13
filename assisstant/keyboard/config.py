@@ -1,15 +1,22 @@
 from PyQt5.QtCore import Qt
 
-FREQ    =   [6.666666666666667, 8.620689655172415, 10, 7.575757575757576]
-# fifth freq 12.195121951219512
-
+FREQ = [
+	6.666666666666667,
+#	12.195121951219512,
+	5.882352941,
+	10,
+	7.575757575757576
+]
+# fifth freq 
+# 8.620689655172415
+# 
 # TODO: Adjust colors
-COLOR   =   [Qt.white, Qt.blue, Qt.green, Qt.red, Qt.black]
-TIME_FLASH_SEC  =   5
-TIME_REST_SEC   =   3
+COLOR   =   [Qt.green, Qt.green, Qt.green, Qt.green, Qt.black]
+TIME_FLASH_SEC  =   2
+TIME_REST_SEC   =   4
 ANIMATION_DURATION = 300
-GRIDLAYOUT_MARGIN = 30
-GRIDLAYOUT_SPACING = 200
+GRIDLAYOUT_MARGIN = 0
+GRIDLAYOUT_SPACING = 100
 # CHARS = ["ABCDQRST",
 #          "EFGHUVWX",
 #          "IJKLYZ.,",
