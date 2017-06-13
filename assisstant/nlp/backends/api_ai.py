@@ -8,7 +8,7 @@ from datetime import datetime
 class ApiaiBackend(NlpBackend):
 	def __init__(self):
 		# We should separate configurations like this in separate settings file to avoid later headaches
-		CLIENT_ACCESS_TOKEN='31dc1846968d441b950e3a6b15797bff'
+		CLIENT_ACCESS_TOKEN='8dda3e91a2b240e1b16d48aa57433ece'
 		self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
 	def get_intent(self, query, session_id):
