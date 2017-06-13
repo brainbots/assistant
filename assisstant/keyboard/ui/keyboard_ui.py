@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from keyboard import config
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QFont
 from .components import FlashingBox
@@ -21,8 +22,11 @@ class Ui_KeyboardWindow(object):
         self.vertLayout.setSpacing(0)
         self.vertLayout.setObjectName("vertLayout")
         self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setSpacing(0)
+        self.gridLayout.setContentsMargins(config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN)
+        self.gridLayout.setSpacing(config.GRIDLAYOUT_SPACING)
         self.gridLayout.setObjectName("gridLayout")
         self.top_left = FlashingBox(self.centralWidget)
         self.top_left.setObjectName("top_left")

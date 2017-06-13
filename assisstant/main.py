@@ -4,6 +4,7 @@ import getopt
 import signal
 import sys
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import Qt
 
 from keyboard.ui.widgets import KeyboardWindow
 from keyboard.manager import Manager
@@ -26,6 +27,7 @@ if __name__ == '__main__':
 
   signal.signal(signal.SIGINT, signal.SIG_DFL)
   app = QApplication([])
+  app.setOverrideCursor(Qt.BlankCursor)
   window = KeyboardWindow()
   window.showMaximized()
   manager = Manager(is_virtual)
