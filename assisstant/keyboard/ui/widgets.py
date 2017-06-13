@@ -30,6 +30,7 @@ class CustomLabel(QLabel):
 
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   ui_pause = pyqtSignal(bool) 
+  send_query_signal = pyqtSignal(str)
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
@@ -63,7 +64,15 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def resetCharacters(self):
     self.target = None
-    self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
+    char = self.labels[self.row][self.col].text()
+    # for testing
+    # char = "?"
+    if char == "?":
+      # for testing
+      # self.send_query_signal.emit("2+2")
+      self.send_query_signal.emit(self.lblCmd.text())
+
+    self.lblCmd.setText(self.lblCmd.text() + char)
     self.row, self.col, self.interval = 0, 0, 8
     self.updatePositions()
     self.ui_pause.emit(False)
