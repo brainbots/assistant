@@ -7,7 +7,7 @@ class FlashingBox(QOpenGLWidget):
     super(FlashingBox, self).__init__(parent)
     self.freq = freq
     self.brushes = [QBrush(Qt.black), QBrush(color)]
-    self.index = 1
+    self.index = 0
     self.enabled = False
 
   def setFreq(self, freq):
