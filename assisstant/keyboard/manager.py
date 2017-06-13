@@ -26,7 +26,8 @@ class Manager(QObject):
 
   def start(self):
     if not self.paused:
-      QTimer.singleShot(1000, Qt.PreciseTimer, self.device.collect)
+      #QTimer.singleShot(1000, Qt.PreciseTimer, self.device.collect)
+      self.device.collect()
 
   def stop(self):
     self.device.stop()
