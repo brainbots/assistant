@@ -11,18 +11,18 @@ class ApiaiBackend(NlpBackend):
 		CLIENT_ACCESS_TOKEN='8dda3e91a2b240e1b16d48aa57433ece'
 		self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
-	def get_intent(self, query, session_id):
+	def get_intent(self, query, session_id, reset_contexts):
 		resp = self.make_request(query, session_id)
 		intent = self.__parse_response(resp)
 		return intent
 
-	def make_request(self, query, session_id, resetContexts=True):
+	def make_request(self, query, session_id, reset_contexts=True):
 		if not self.__check_connection():
 			raise ConnectionError("No internet connection, please connect to the internet.")
-		
+
 		request = self.ai.text_request()
 		request.lang = 'en'		# optional, default value equal 'en'
-		request.resetContexts = resetContexts
+		request.resetContexts = reset_contexts
 		request.session_id = session_id
 		request.query = query
 		response = request.getresponse()
