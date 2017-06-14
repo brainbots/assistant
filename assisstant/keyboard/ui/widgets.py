@@ -1,7 +1,7 @@
 from math import ceil
 from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, pyqtSignal
-from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QMainWindow, QLabel
+from PyQt5.QtGui import QFont, QWindow
+from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QVBoxLayout
 
 from keyboard import config
 from .keyboard_ui import Ui_KeyboardWindow
@@ -37,6 +37,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.setupUi(self)
     self.target = None
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
+
+    self.wdg = QWidget(self.centralWidget)
+    lout = QVBoxLayout(self.wdg)
+    self.wdg.show()
+
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
       box.setColor(config.COLOR[index])
@@ -58,8 +63,28 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         label.show()
         self.labels[i].append(label)
 
+  def embedWindow(self, hwnd):
+    wnd = QWindow.fromWinId(hwnd)
+    self.wnd_container = self.createWindowContainer(wnd, self, Qt.FramelessWindowHint)
+    self.wdg.layout().addWidget(self.wnd_container)
+
+  def unembedWindow(self):
+    # The embedded window is remove but the external process is still running.
+    # The external process termination should be handled by it's owner (probably a bot)
+    self.wnd_container.deleteLater()
+    self.wnd_container = None
+
+  def resizeEmbbedWindow(self):
+    parent_w, parent_h = self.centralWidget.width(), self.centralWidget.height()
+    parent_x, parent_y = self.centralWidget.x(), self.centralWidget.y()
+    wdg_w, wdg_h = parent_w // 1.5, parent_h // 1.5
+    wdg_x, wdg_y = parent_x + (parent_w // 2) - (wdg_w // 2), parent_y + (parent_h // 2) - (wdg_h // 2)
+    self.wdg.resize(wdg_w, wdg_h)
+    self.wdg.move(wdg_x, wdg_y)
+
   def resizeEvent(self, event):
     self.animate()
+    self.resizeEmbbedWindow() 
 
   def resetCharacters(self):
     self.target = None
