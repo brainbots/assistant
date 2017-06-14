@@ -32,5 +32,5 @@ class BotManager:
 					try:
 						return bot.execute(intent)
 					except Exception as e:
-						print(e)
+						raise(e)
 		# TODO: Raise exception if no bot can process this intent
