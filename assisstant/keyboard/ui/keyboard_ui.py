@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from keyboard import config
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QFont
 from .components import FlashingBox
@@ -17,12 +18,15 @@ class Ui_KeyboardWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.vertLayout = QtWidgets.QVBoxLayout()
         self.vertLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
-        self.vertLayout.setContentsMargins(5, 5, 5, 5)
+        self.vertLayout.setContentsMargins(0, 0, 0, 0)
         self.vertLayout.setSpacing(0)
         self.vertLayout.setObjectName("vertLayout")
         self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setContentsMargins(5, 5, 5, 5)
-        self.gridLayout.setSpacing(0)
+        self.gridLayout.setContentsMargins(config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN,
+                                           config.GRIDLAYOUT_MARGIN)
+        self.gridLayout.setSpacing(config.GRIDLAYOUT_SPACING)
         self.gridLayout.setObjectName("gridLayout")
         self.top_left = FlashingBox(self.centralWidget)
         self.top_left.setObjectName("top_left")
@@ -39,7 +43,7 @@ class Ui_KeyboardWindow(object):
         self.vertLayout.addLayout(self.gridLayout)
         self.horzLayout = QtWidgets.QHBoxLayout()
         self.horzLayout.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)
-        self.horzLayout.setContentsMargins(5, 5, 5, 5)
+        self.horzLayout.setContentsMargins(0, 0, 0, 0)
         self.horzLayout.setSpacing(0)
         self.horzLayout.setObjectName("horzLayout")
         self.lblCmd = QtWidgets.QLabel(self.centralWidget)

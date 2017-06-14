@@ -1,0 +1,17 @@
+[default]
+bears = SpellCheckBear, InvalidLinkBear, GitCommitBear
+
+[python]
+files = **.py
+# Search for better indentation
+bears = CPDBear, FilenameBear, LineLengthBear,
+        QuotesBear, PyFlakesBear, PEP8Bear,
+        PyUnusedCodeBear, PyromaBear
+
+language = python
+file_naming_convention = snake
+use_spaces = True
+max_line_length = 79
+preferred_quotation = '
+remove_all_unused_imports = True
+remove_unused_variables = True

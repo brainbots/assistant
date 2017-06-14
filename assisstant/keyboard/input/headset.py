@@ -1,4 +1,5 @@
 import numpy as np
+from emokit.emotiv import Emotiv
 
 def get_single_sample(headset, index, data, quality):
   '''
@@ -21,11 +22,12 @@ def get_single_sample(headset, index, data, quality):
       quality[3][index] = packet.sensors['P8']['quality']
       break
 
-def read(headset, no_of_seconds):
-  data = np.empty([4, no_of_seconds * 128])
-  quality = np.empty([4, no_of_seconds * 128])
+def read(no_of_seconds):
+  with Emotiv() as headset:
+    data = np.empty([4, no_of_seconds * 128])
+    quality = np.empty([4, no_of_seconds * 128])
   
-  for i in range(no_of_seconds*128):
-    get_single_sample(headset, i, data, quality)
+    for i in range(no_of_seconds*128):
+      get_single_sample(headset, i, data, quality)
 
-  return (data, quality)
+    return (data, quality)

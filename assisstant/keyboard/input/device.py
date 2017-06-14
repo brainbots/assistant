@@ -1,11 +1,11 @@
 import concurrent.futures as cf
 import time
 from PyQt5.QtCore import QObject, pyqtSignal
-from emokit.emotiv import Emotiv
 from . import virtual, headset
 
-def run(read, dev, collect_time):
-  sample, quality =  read(dev, collect_time)
+
+def run(read, collect_time):
+  sample, quality = read(collect_time)
   return (sample, quality)
 
 class Device(QObject):
@@ -18,7 +18,6 @@ class Device(QObject):
     self.future = None
     self.collect_time = collect_time
     self.read_func = virtual.read if self.virtual else headset.read
-    self.dev = None if self.virtual else Emotiv()
     print("Device: open")
 
   def collect(self):
@@ -28,7 +27,7 @@ class Device(QObject):
     # because it calls ProcessPoolExecutor.shutdown(True)
     # which is a blocking call thats freezes the main process
     self.exe = cf.ProcessPoolExecutor()
-    self.future = self.exe.submit(run, self.read_func, self.dev, self.collect_time)
+    self.future = self.exe.submit(run, self.read_func, self.collect_time)
     self.future.add_done_callback(self.onCollectEvent)
 
   def onCollectEvent(self, future):

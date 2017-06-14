@@ -1,3 +1,4 @@
+from math import ceil
 from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, pyqtSignal
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QLabel
@@ -32,9 +33,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
+    self.initial_font = 17
     self.setupUi(self)
-
-    self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right, self.undo]
+    self.target = None
+    self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
       box.setColor(config.COLOR[index])
@@ -48,9 +50,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.labels.append(list())
       for j in range(self.interval):
         # TODO: Use proper font size
-        label = CustomLabel(self, 55)
+        label = CustomLabel(self, self.initial_font)
         label.setText(config.CHARS[i][j])
-        label.setStyleSheet("QLabel { color : white; }")
+        label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.5); }")
         label.setAttribute(Qt.WA_TranslucentBackground)
         label.setAlignment(Qt.AlignCenter)
         label.show()
@@ -60,10 +62,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.animate()
 
   def resetCharacters(self):
+    self.target = None
     self.lblCmd.setText(self.lblCmd.text() + self.labels[self.row][self.col].text())
     self.row, self.col, self.interval = 0, 0, 8
     self.updatePositions()
-    self.ui_pause.emit(False)
+    QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def update_handler(self, result):
     self.interval //= 2
@@ -77,17 +80,16 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.row += self.interval
       self.col += self.interval
 
+    QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
+
     if self.interval == 1:
       self.ui_pause.emit(True)
-      QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
-      QTimer.singleShot(2000, Qt.PreciseTimer, self.resetCharacters)
-    else:
-      QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
-
+      self.target = result
+      QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
 
   def updatePositions(self):
-    label_width = self.gridLayout.geometry().width() // self.interval
-    label_height = self.gridLayout.geometry().height() // self.interval
+    label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
+    label_height = (self.gridLayout.geometry().height() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
 
     # TODO: Don't hide the labels that will remain
     for i in range(8):
@@ -95,17 +97,35 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.labels[i][j].hide()
 
     animation_group = QParallelAnimationGroup(self)
-    for i in range(self.interval):
-      for j in range(self.interval):
-        x = self.labels[i + self.row][j + self.col]
-        x.show()
-        # TODO: Use proper font size
-        x.set_font_size(55)
-        x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
+    for pos in range(4):
+      shiftx, shifty, idx_shiftx, idx_shifty = 0, 0, 0, 0
+      if pos == 0:
+        shiftx = config.GRIDLAYOUT_MARGIN
+        shifty = config.GRIDLAYOUT_MARGIN
+      elif pos == 1:
+        shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        shifty = config.GRIDLAYOUT_MARGIN
+        idx_shiftx = self.interval //2
+      elif pos == 2:
+        shiftx = config.GRIDLAYOUT_MARGIN
+        shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        idx_shifty = self.interval //2
+      elif pos == 3:
+        shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        idx_shiftx = self.interval //2
+        idx_shifty = self.interval //2
+
+      for i in range(idx_shifty,self.interval//2 + idx_shifty):
+        for j in range(idx_shiftx,self.interval//2 + idx_shiftx):
+          x = self.labels[i + self.row][j + self.col]
+          x.show()
+          x.set_font_size(self.initial_font)
+          x.setGeometry(QRect(label_width * j + shiftx, label_height * i + shifty, label_width, label_height))
 
   def animate(self):
-    label_width = self.gridLayout.geometry().width() // self.interval
-    label_height = self.gridLayout.geometry().height() // self.interval
+    label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
+    label_height = (self.gridLayout.geometry().height() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
 
     # TODO: Don't hide the labels that will remain
     for i in range(8):
@@ -113,32 +133,59 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.labels[i][j].hide()
 
     animation_group = QParallelAnimationGroup(self)
-    for i in range(self.interval):
-      for j in range(self.interval):
-        x = self.labels[i + self.row][j + self.col]
-        x.show()
-        if self.interval == 8:
-          # TODO: Use proper font size
-          x.set_font_size(55)
-          x.setGeometry(QRect(label_width * j, label_height * i, label_width, label_height))
-        else:
-          easing_curve = QEasingCurve.InQuad
+    for pos in range(4):
+      if self.interval == 1 and pos != self.target:
+        continue
+      shiftx, shifty, idx_shiftx, idx_shifty = 0, 0, 0, 0
+      if pos == 0:
+        shiftx = config.GRIDLAYOUT_MARGIN
+        shifty = config.GRIDLAYOUT_MARGIN
+      elif pos == 1:
+        shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        shifty = config.GRIDLAYOUT_MARGIN
+        idx_shiftx = self.interval // 2
+      elif pos == 2:
+        shiftx = config.GRIDLAYOUT_MARGIN
+        shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        idx_shifty = self.interval // 2
+      elif pos == 3:
+        shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
+        idx_shiftx = self.interval // 2
+        idx_shifty = self.interval // 2
 
-          animation = QPropertyAnimation(x, b'geometry', self)
-          animation.setDuration(config.ANIMATION_DURATION)
-          animation.setStartValue(x.geometry())
-          animation.setEndValue(QRect(label_width * j, label_height * i, label_width, label_height))
-          animation.setEasingCurve(easing_curve)
-          animation_group.addAnimation(animation)
+      for i in range(idx_shifty, ceil(self.interval/2) + idx_shifty):
+        for j in range(idx_shiftx, ceil(self.interval/2) + idx_shiftx):
+          x = self.labels[i + self.row][j + self.col]
+          x.show()
+          if self.interval == 8:
+            # TODO: Use proper font size
+            x.set_font_size(self.initial_font)
+            x.setGeometry(QRect(label_width * j + shiftx, label_height * i + shifty, label_width, label_height))
+          else:
+            easing_curve = QEasingCurve.InQuad
+            animation = QPropertyAnimation(x, b'geometry', self)
+            animation.setDuration(config.ANIMATION_DURATION)
+            animation.setStartValue(x.geometry())
+            if self.interval != 1:
+              animation.setEndValue(QRect(label_width * j + shiftx , label_height * i +shifty , label_width, label_height))
+            else:
+              grdWidth = self.gridLayout.geometry().width()
+              grdHeight = self.gridLayout.geometry().height()
+              lblWidth = grdWidth / 8
+              lblHeight = grdHeight / 2
+              animation.setEndValue(QRect((grdWidth-lblWidth) / 2, (grdHeight-lblHeight)/2, lblWidth, lblHeight))
+            animation.setEasingCurve(easing_curve)
+            animation_group.addAnimation(animation)
 
-          animation = QPropertyAnimation(x, b'font_size', self)
-          animation.setDuration(config.ANIMATION_DURATION)
-          animation.setStartValue(x.font_size)
-          animation.setEndValue(min(label_width, label_height) / 1.5)
-          animation.setEasingCurve(easing_curve)
-          animation_group.addAnimation(animation)
+            animation = QPropertyAnimation(x, b'font_size', self)
+            animation.setDuration(config.ANIMATION_DURATION)
+            animation.setStartValue(x.font_size)
+            animation.setEndValue(min(label_width, label_height) / 2)
+            animation.setEasingCurve(easing_curve)
+            animation_group.addAnimation(animation)
 
-    animation_group.start()
+      animation_group.start()
 
   def flash(self):
     for box in self.boxes:
