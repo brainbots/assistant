@@ -36,3 +36,5 @@ CHARS = ["abcdqrst",
          "5678~_|&",
          "90-+()[]",
          "*/^=<>{}"]
+
+AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete"
