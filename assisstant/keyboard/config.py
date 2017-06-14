@@ -12,8 +12,8 @@ FREQ = [
 # 
 # TODO: Adjust colors
 COLOR   =   [Qt.green, Qt.green, Qt.green, Qt.green, Qt.black]
-TIME_FLASH_SEC  =   2
-TIME_REST_SEC   =   4
+TIME_FLASH_SEC  = 3 
+TIME_REST_SEC   = 4
 ANIMATION_DURATION = 300
 GRIDLAYOUT_MARGIN = 0
 GRIDLAYOUT_SPACING = 100
@@ -36,3 +36,5 @@ CHARS = ["abcdqrst",
          "5678~_|&",
          "90-+()[]",
          "*/^=<>{}"]
+
+AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete"

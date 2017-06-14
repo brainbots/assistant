@@ -75,7 +75,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.lblCmd.setText(self.lblCmd.text() + char)
     self.row, self.col, self.interval = 0, 0, 8
     self.updatePositions()
-    self.ui_pause.emit(False)
+    QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def update_handler(self, result):
     self.interval //= 2
@@ -94,7 +94,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if self.interval == 1:
       self.ui_pause.emit(True)
       self.target = result
-      QTimer.singleShot(2000, Qt.PreciseTimer, self.resetCharacters)
+      QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
 
   def updatePositions(self):
     label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval

@@ -4,7 +4,7 @@ import getopt
 import signal
 import sys
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 
 from manager import Manager
 

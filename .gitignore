@@ -5,3 +5,5 @@ __pycache__
 dataset
 .idea/
 .python-version
+Pipfile
+Pipfile.lock
