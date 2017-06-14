@@ -30,6 +30,7 @@ class CustomLabel(QLabel):
 
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   ui_pause = pyqtSignal(bool) 
+  ui_freeze = pyqtSignal(bool) 
   send_query_signal = pyqtSignal(str)
 
   def __init__(self):
@@ -66,11 +67,12 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.target = None
     char = self.labels[self.row][self.col].text()
     # for testing
-    # char = "?"
+    char = "?"
     if char == "?":
       # for testing
-      # self.send_query_signal.emit("2+2")
-      self.send_query_signal.emit(self.lblCmd.text())
+      self.ui_freeze.emit(True)
+      self.send_query_signal.emit("2+2")
+      # self.send_query_signal.emit(self.lblCmd.text())
 
     self.lblCmd.setText(self.lblCmd.text() + char)
     self.row, self.col, self.interval = 0, 0, 8
@@ -213,3 +215,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     else:
       print("Flash: off")
       self.unflash()
+
+  def receive_query_response(self, action):
+    print(action.type)
+    print(action.body)
+    QTimer.singleShot(5000, Qt.PreciseTimer, self.ui_freeze.emit(False))
+
