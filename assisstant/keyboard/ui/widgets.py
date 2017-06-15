@@ -222,5 +222,5 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def receive_query_response(self, action):
     print(action.type)
     print(action.body)
+    self.undo.setText(str(action.body))
     QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
-
