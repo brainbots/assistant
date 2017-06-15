@@ -7,14 +7,14 @@ class NlpManager:
 	    self.NlpBackend = ApiaiBackend()
 	    # TODO: Session id should be related to the current user
 	    self.session_id = 1
-	    self.reset_context = True
+	    self.__reset_contexts = True
 
     def get_intent(self, query):
 	    return self.NlpBackend.get_intent(
-		            query,self.session_id,self.reset_context)
-
-    def keep_contexts(self):
-	    self.reset_contexts = False
+		            query,self.session_id,self.__reset_contexts)
 
     def reset_contexts(self):
-	    self.reset_contexts = True
+        self.__reset_contexts = True
+
+    def keep_contexts(self):
+        self.__reset_contexts = False
