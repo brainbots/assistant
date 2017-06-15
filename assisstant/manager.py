@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt, QObject
 from keyboard.ui.widgets import KeyboardWindow
 import keyboard.manager as Keyboard
 import nlp.nlp_manager as NLP
+import bots.manager as Bots
 from pprint import pprint
 
 class Manager(QObject):
@@ -18,6 +19,7 @@ class Manager(QObject):
 		self.window.showMaximized()
 		self.keyboard_manager = Keyboard.Manager(is_virtual)
 		self.nlp_manager = NLP.NlpManager()
+		self.bots_manager = Bots.BotManager()
 
 		self.keyboard_manager.flash_signal.connect(self.window.flash_handler)
 		self.keyboard_manager.update_signal.connect(self.window.update_handler)
@@ -32,3 +34,14 @@ class Manager(QObject):
 		print(intent.action)
 		print(intent.score)
 		print(intent.parameters)
+		try:
+		    action = self.bots_manager.run_action(intent)
+		    if action.keep_context:
+		        self.nlp_manager.keep_contexts()
+		    else:
+		        self.nlp_manager.reset_contexts()
+		    #Call or emit a signal to the keyboard
+		    self.window.receive_query_response(action)
+		except Exception as e:
+		    raise(e)
+
