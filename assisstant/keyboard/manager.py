@@ -25,8 +25,10 @@ class Manager(QObject):
     else:
       self.start()
 
-  def freeze_handler(self):
-    self.freeze = True
+  def freeze_handler(self, x):
+    self.freeze = x
+    if not x:
+      self.start()
 
   def start(self):
     if not self.paused:

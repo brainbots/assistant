@@ -216,8 +216,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       print("Flash: off")
       self.unflash()
 
+  def unfreeze(self):
+    self.ui_freeze.emit(False)
+
   def receive_query_response(self, action):
     print(action.type)
     print(action.body)
-    QTimer.singleShot(5000, Qt.PreciseTimer, self.ui_freeze.emit(False))
+    QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
 
