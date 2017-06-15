@@ -22,6 +22,7 @@ class Manager(QObject):
 		self.keyboard_manager.flash_signal.connect(self.window.flash_handler)
 		self.keyboard_manager.update_signal.connect(self.window.update_handler)
 		self.window.ui_pause.connect(self.keyboard_manager.pause_handler)
+		self.window.ui_freeze.connect(self.keyboard_manager.freeze_handler)
 		self.window.send_query_signal.connect(self.analyze_query)
 		self.keyboard_manager.start()
 
