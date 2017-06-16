@@ -12,7 +12,7 @@ class ApiaiBackend(NlpBackend):
 		self.ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
 
 	def get_intent(self, query, session_id, reset_contexts):
-		resp = self.make_request(query, session_id)
+		resp = self.make_request(query, session_id, reset_contexts)
 		intent = self.__parse_response(resp)
 		return intent
 
