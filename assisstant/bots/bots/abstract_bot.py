@@ -11,3 +11,7 @@ class AbstractBot(ABC):
 	@abstractmethod
 	def execute(self, intent):
 		return
+
+	@abstractmethod
+	def request_missing_attr(self, intent):
+		return
