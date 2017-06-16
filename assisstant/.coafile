@@ -11,6 +11,7 @@ bears = CPDBear, FilenameBear, LineLengthBear,
 language = python
 file_naming_convention = snake
 use_spaces = True
+indent_size = 2
 max_line_length = 79
 preferred_quotation = '
 remove_all_unused_imports = True
