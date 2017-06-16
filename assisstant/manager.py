@@ -30,10 +30,16 @@ class Manager(QObject):
 
 	def analyze_query(self, query):
 		print(query)
-		intent = self.nlp_manager.get_intent(query)
-		print(intent.action)
-		print(intent.score)
-		print(intent.parameters)
+		try:
+		    intent = self.nlp_manager.get_intent(query)
+		    print(intent.action)
+		    print(intent.score)
+		    print(intent.parameters)
+		except Exception as e:
+		    # TODO: Retry the request again
+		    # If request fails, notify the user
+		    print(e)
+		    return
 		try:
 		    action = self.bots_manager.run_action(intent)
 		    if action.keep_context:
@@ -43,5 +49,7 @@ class Manager(QObject):
 		    #Call or emit a signal to the keyboard
 		    self.window.receive_query_response(action)
 		except Exception as e:
-		    raise(e)
+		    #TODO: Bots manager failed to find the appropriate bot
+		    # Notify the user that input is ambiguous
+		    print(e)
 

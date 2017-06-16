@@ -29,8 +29,8 @@ class CustomLabel(QLabel):
 
 
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
-  ui_pause = pyqtSignal(bool) 
-  ui_freeze = pyqtSignal(bool) 
+  ui_pause = pyqtSignal(bool)
+  ui_freeze = pyqtSignal(bool)
   send_query_signal = pyqtSignal(str)
 
   def __init__(self):
@@ -39,6 +39,12 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.setupUi(self)
     self.target = None
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
+    # for testing
+    self.queries = [
+        'What is the weather?',
+        'in cairo',
+        'weather in london,gb?'
+    ]
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
       box.setColor(config.COLOR[index])
@@ -71,7 +77,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if char == "?":
       # for testing
       self.ui_freeze.emit(True)
-      self.send_query_signal.emit("2+2")
+      if len(self.queries) == 0:
+          self.send_query_signal.emit('2+2')
+      else:
+          self.send_query_signal.emit(self.queries.pop(0))
       # self.send_query_signal.emit(self.lblCmd.text())
 
     self.lblCmd.setText(self.lblCmd.text() + char)
