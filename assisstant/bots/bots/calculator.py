@@ -23,3 +23,6 @@ class CalculatorBot(AbstractBot):
 		except Exception as e:
 			# Raise the exception e
 			raise(e)
+	def request_missing_attr(self, intent):
+	    #TODO: Check for missing attr
+	    return
