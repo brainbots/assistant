@@ -40,7 +40,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
     self.wdg = QWidget(self.centralWidget)
     lout = QVBoxLayout(self.wdg)
-    self.wdg.show()
+    self.wdg.hide()
 
     for index, box in enumerate(self.boxes):
       box.setFreq(config.FREQ[index])
@@ -67,12 +67,14 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     wnd = QWindow.fromWinId(hwnd)
     self.wnd_container = self.createWindowContainer(wnd, self, Qt.FramelessWindowHint)
     self.wdg.layout().addWidget(self.wnd_container)
+    self.wdg.show()
 
   def unembedWindow(self):
     # The embedded window is remove but the external process is still running.
     # The external process termination should be handled by it's owner (probably a bot)
     self.wnd_container.deleteLater()
     self.wnd_container = None
+    self.wdg.hide()
 
   def resizeEmbbedWindow(self):
     parent_w, parent_h = self.centralWidget.width(), self.centralWidget.height()
