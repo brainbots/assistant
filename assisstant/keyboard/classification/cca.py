@@ -17,15 +17,15 @@ def getArtificialRefSignal(freqs,Nharmonics,n_secs,fs):
 
 
 def getBestFrequency(eeg_data,ref_data):
-    bestfreq=0;
-    bestcanoncorr=-100000000;
+    bestfreq = 0
+    bestcanoncorr = -100000000
     cca = rcca.CCA(kernelcca = False, reg = 0., numCC = 2)
     for i in range(len(ref_data)):
         cca.train([np.transpose(eeg_data), np.transpose(ref_data[i])])
         if  cca.cancorrs[0]+cca.cancorrs[1] > bestcanoncorr:
             bestcanoncorr = cca.cancorrs[0]+cca.cancorrs[1]
             bestfreq = i
-    return bestfreq+1
+    return bestfreq
 
 def classify(sample, freqs, duration):
     freqs = np.array(freqs)
