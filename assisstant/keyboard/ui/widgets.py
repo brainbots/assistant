@@ -210,8 +210,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
             else:
               grdWidth = self.gridLayout.geometry().width()
               grdHeight = self.gridLayout.geometry().height()
-              lblWidth = grdWidth / 8
-              lblHeight = grdHeight / 2
+              lblWidth = grdWidth
+              lblHeight = grdHeight
               animation.setEndValue(QRect((grdWidth-lblWidth) / 2, (grdHeight-lblHeight)/2, lblWidth, lblHeight))
             animation.setEasingCurve(easing_curve)
             animation_group.addAnimation(animation)
