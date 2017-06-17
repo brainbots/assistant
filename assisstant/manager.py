@@ -3,6 +3,7 @@ from keyboard.ui.widgets import KeyboardWindow
 import keyboard.manager as Keyboard
 import nlp.nlp_manager as NLP
 import bots.manager as Bots
+from keyboard.autocomplete.manager import AutoCompleteManager
 from pprint import pprint
 
 class Manager(QObject):
@@ -20,13 +21,21 @@ class Manager(QObject):
 		self.keyboard_manager = Keyboard.Manager(is_virtual)
 		self.nlp_manager = NLP.NlpManager()
 		self.bots_manager = Bots.BotManager()
+		self.autocomplete_manager = AutoCompleteManager()
 
 		self.keyboard_manager.flash_signal.connect(self.window.flash_handler)
 		self.keyboard_manager.update_signal.connect(self.window.update_handler)
 		self.window.ui_pause.connect(self.keyboard_manager.pause_handler)
 		self.window.ui_freeze.connect(self.keyboard_manager.freeze_handler)
 		self.window.send_query_signal.connect(self.analyze_query)
+		self.window.autocomplete_signal.connect(self.predict_word)
 		self.keyboard_manager.start()
+
+	def predict_word(self, query):
+		print(query)
+		words = self.autocomplete_manager.complete(query)
+		print(words)
+		self.window.receive_predicted_words(words)
 
 	def analyze_query(self, query):
 		print(query)
@@ -39,6 +48,7 @@ class Manager(QObject):
 		    # TODO: Retry the request again
 		    # If request fails, notify the user
 		    print(e)
+		    self.window.receive_query_response(None)
 		    return
 		try:
 		    action = self.bots_manager.run_action(intent)

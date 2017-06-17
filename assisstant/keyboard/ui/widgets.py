@@ -32,6 +32,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   ui_pause = pyqtSignal(bool)
   ui_freeze = pyqtSignal(bool)
   send_query_signal = pyqtSignal(str)
+  autocomplete_signal = pyqtSignal(str)
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
@@ -69,22 +70,35 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def resizeEvent(self, event):
     self.animate()
 
+  def loadCharacters(self):
+    for i in range(self.interval):
+      for j in range(self.interval):
+        self.labels[i][j].setText(config.CHARS[i][j])
+
   def resetCharacters(self):
     self.target = None
-    char = self.labels[self.row][self.col].text()
+    selected = self.labels[self.row][self.col].text()
     # for testing
-    char = "?"
-    if char == "?":
+    # selected = "?"
+    if selected == "?":
       # for testing
       self.ui_freeze.emit(True)
       if len(self.queries) == 0:
-          self.send_query_signal.emit('2+2')
+        self.send_query_signal.emit('2+2')
       else:
-          self.send_query_signal.emit(self.queries.pop(0))
+        self.send_query_signal.emit(self.queries.pop(0))
       # self.send_query_signal.emit(self.lblCmd.text())
 
-    self.lblCmd.setText(self.lblCmd.text() + char)
+    if len(selected) > 1:
+      current_words = self.lblCmd.text().split(" ")
+      print("current words: ", current_words)
+      current_words[-1] = selected
+      print(current_words)
+      self.lblCmd.setText(" ".join(current_words) + " ")
+    else:
+      self.lblCmd.setText(self.lblCmd.text() + selected)
     self.row, self.col, self.interval = 0, 0, 8
+    self.loadCharacters()
     self.updatePositions()
     QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
@@ -105,7 +119,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if self.interval == 1:
       self.ui_pause.emit(True)
       self.target = result
-      QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
+      if len(self.labels[self.row][self.col].text()) > 1 or result == 0:
+        QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
+      else:
+        self.ui_freeze.emit(True)
+        self.autocomplete_signal.emit(self.lblCmd.text() + self.labels[self.row][self.col].text())
 
   def updatePositions(self):
     label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
@@ -229,7 +247,28 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.ui_freeze.emit(False)
 
   def receive_query_response(self, action):
-    print(action.type)
-    print(action.body)
-    self.undo.setText(str(action.body))
+    if action:
+      print(action.type)
+      print(action.body)
+      self.undo.setText(str(action.body))
     QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
+
+  def receive_predicted_words(self, words):
+    self.unfreeze()
+    if len(words) < 3:
+      QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
+    else:
+      self.interval = 2
+      selected_char = self.labels[self.row][self.col].text()
+      self.row, self.col = 0, 0
+      self.labels[self.row][self.col].setText(selected_char)
+      self.updatePositions()
+      idx = 0
+      for i in range(self.interval):
+        for j in range(self.interval):
+          if idx > 0:
+            self.labels[i+self.row][j+self.col].setText(words[idx - 1][0])
+          idx += 1
+      QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
+
+    # self.interval = 
