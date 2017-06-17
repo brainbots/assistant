@@ -27,7 +27,7 @@ def getBestFrequency(eeg_data,ref_data):
             bestfreq = i
     return bestfreq
 
-def classify(sample, freqs, duration):
+def classify(sample, freqs, duration, old_data = None):
     freqs = np.array(freqs)
     n_harmonics = 3
     ref = getArtificialRefSignal(freqs, n_harmonics, duration, 128)

@@ -1,6 +1,5 @@
 import numpy as np
 from keyboard.preprocessing import butter
-from keyboard.datasets.reader import getUserDatasets
 from . import rcca
 
 #Returns a list of matrices where each row in each matrix is a sin or cos with frequency = freqs[i] , the number of harmonics = Nharmonics and row length = sample_length
@@ -56,8 +55,8 @@ def getBestFrequency(eeg_data, ref_data, data, target):
             bestfreq = i
     return bestfreq
 
-def classify(sample, freqs, duration):
-    data, target = getUserDatasets()
+def classify(sample, freqs, duration, old_data = None):
+    data, target = old_data
     data = data[:,:,0:128*3]
     data = butter.filter(data)
     freqs = np.array(freqs)
