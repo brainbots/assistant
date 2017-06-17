@@ -27,15 +27,15 @@ def read(folder, duration):
 
     '''
 
-    target_filename = "%s_target.csv".format(duration)
-    target_path = os.path.join(directory, target_filename)
+    target_filename = "{}_target.csv".format(duration)
+    target_path = os.path.join(folder, target_filename)
 
     channels=("O1", "O2", "P7", "P8")
     channels_data=[]
 
     for channel in channels:
         sampels_filename = str(duration) + '_' + channel + ".csv"
-        samples_path = os.path.join(directory, sampels_filename)
+        samples_path = os.path.join(folder, sampels_filename)
         channels_data.append(np.genfromtxt(samples_path, delimiter=","))
 
     samples=np.stack(channels_data)

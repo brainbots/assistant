@@ -35,35 +35,36 @@ def getCorrelationVector(X,Xcap,Y):
     return np.array([r1,r2,0,r4,r5])
 
 def getRho(corr_vec):
-    rho = 0    
+    rho = 0
     for i in range(5):
         rho += np.sign(corr_vec[i]) * (corr_vec[i]**2)
     return rho
 
 
-def getBestFrequency(eeg_data, ref_data, data):
+def getBestFrequency(eeg_data, ref_data, data, target):
     bestfreq = 0
     bestrho= -100000000
     for i in range(len(ref_data)):
-        indices = np.where(target == i)
+        indices = np.where(target == i+1)
         target_data = data[indices,:,:][0]
         Xcap = np.mean(target_data,0)
-        Y = ref[i]
-        vec = getCorrelationVector(sample,Xcap,Y)
+        Y = ref_data[i]
+        vec = getCorrelationVector(eeg_data,Xcap,Y)
         rho = getRho(vec)
         if  rho > bestrho:
             bestrho = rho
             bestfreq = i
     return bestfreq
-    
+
 def classify(sample, freqs, duration):
     data, target = getUserDatasets()
+    data = data[:,:,0:128*3]
     data = butter.filter(data)
     freqs = np.array(freqs)
     n_harmonics = 3
     ref = getArtificialRefSignal(freqs, n_harmonics, duration, 128)
     sample = butter.filter(sample)
-    return getBestFrequency(sample, ref, data)
+    return getBestFrequency(sample, ref, data, target)
 
 
 
