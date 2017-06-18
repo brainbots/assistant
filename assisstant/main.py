@@ -6,9 +6,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt, QTimer
 
-from keyboard.ui.widgets import KeyboardWindow
-from keyboard.manager import Manager
-from keyboard import config
+from manager import Manager
 
 if __name__ == '__main__':
   try:
@@ -29,11 +27,6 @@ if __name__ == '__main__':
   signal.signal(signal.SIGINT, signal.SIG_DFL)
   app = QApplication([])
   app.setOverrideCursor(Qt.BlankCursor)
-  window = KeyboardWindow()
-  window.showMaximized()
-  manager = Manager(is_virtual)
-  manager.flash_signal.connect(window.flash_handler)
-  manager.update_signal.connect(window.update_handler)
-  window.ui_pause.connect(manager.pause_handler)
-  QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, manager.start)
+
+  main_manager = Manager(is_virtual)
   sys.exit(app.exec())
