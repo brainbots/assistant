@@ -1,6 +1,6 @@
 from math import ceil
 from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, pyqtSignal
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QTextCursor
 from PyQt5.QtWidgets import QMainWindow, QLabel
 
 from keyboard import config
@@ -87,16 +87,17 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.send_query_signal.emit('2+2')
       else:
         self.send_query_signal.emit(self.queries.pop(0))
-      # self.send_query_signal.emit(self.lblCmd.text())
+      # self.send_query_signal.emit(self.lblCmd.toPlainText())
 
     if len(selected) > 1:
-      current_words = self.lblCmd.text().split(" ")
-      print("current words: ", current_words)
+      current_words = self.lblCmd.toPlainText().split(" ")
       current_words[-1] = selected
       print(current_words)
-      self.lblCmd.setText(" ".join(current_words) + " ")
+      self.insert_text(current_words[-1] + " ")
+      # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
     else:
-      self.lblCmd.setText(self.lblCmd.text() + selected)
+      self.insert_text(selected)
+      # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
     self.row, self.col, self.interval = 0, 0, 8
     self.loadCharacters()
     self.updatePositions()
@@ -123,7 +124,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
       else:
         self.ui_freeze.emit(True)
-        self.autocomplete_signal.emit(self.lblCmd.text() + self.labels[self.row][self.col].text())
+        self.autocomplete_signal.emit(self.lblCmd.toPlainText() + self.labels[self.row][self.col].text())
 
   def updatePositions(self):
     label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
@@ -271,4 +272,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           idx += 1
       QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
-    # self.interval = 
+  def insert_text(self, s):
+    self.lblCmd.moveCursor(QTextCursor.End)
+    self.lblCmd.textCursor().insertText(s)
+    self.lblCmd.moveCursor(QTextCursor.End)
