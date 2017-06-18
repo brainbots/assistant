@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt
 
+USER = "AmrMohamed"
 FREQ = [
 	6.666666666666667,
 #	12.195121951219512,
