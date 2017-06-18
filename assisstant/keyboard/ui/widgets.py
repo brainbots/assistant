@@ -106,9 +106,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def resetCharacters(self):
     self.target = None
     selected = self.labels[self.row][self.col].text()
+    if selected == "␣":
+      selected = " "
     # for testing
     # selected = "?"
-    if selected == "?":
+    if selected == "⏎":
       # for testing
       self.ui_freeze.emit(True)
       if len(self.queries) == 0:
@@ -116,16 +118,16 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       else:
         self.send_query_signal.emit(self.queries.pop(0))
       # self.send_query_signal.emit(self.lblCmd.toPlainText())
-
-    if len(selected) > 1:
-      current_words = self.lblCmd.toPlainText().split(" ")
-      current_words[-1] = selected
-      print(current_words)
-      self.insert_text(current_words[-1] + " ")
-      # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
     else:
-      self.insert_text(selected)
-      # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
+      if len(selected) > 1:
+        current_words = self.lblCmd.toPlainText().split(" ")
+        current_words[-1] = selected
+        print(current_words)
+        self.insert_text(current_words[-1] + " ")
+        # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
+      else:
+        self.insert_text(selected)
+        # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
     self.row, self.col, self.interval = 0, 0, 8
     self.loadCharacters()
     self.updatePositions()

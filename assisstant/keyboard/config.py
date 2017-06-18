@@ -32,10 +32,10 @@ GRIDLAYOUT_SPACING = 100
 CHARS = ["abcdqrst",
          "efghuvwx",
          "ijklyz.,",
-         "mnop\"'?⏎",
+         "mnop\"'?&",
          "1234$@^!",
-         "5678~_|&",
+         "5678~_{}",
          "90-+()[]",
-         "*/^=<>{}"]
+         "*/^=<>␣⏎"]
 
 AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete"
