@@ -40,6 +40,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.initial_font = 17
     self.setupUi(self)
     self.target = None
+    self.autocomplete = False
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
     # for testing
     self.queries = [
@@ -105,6 +106,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def resetCharacters(self):
     self.target = None
+    self.autocomplete = False
     selected = self.labels[self.row][self.col].text()
     if selected == "␣":
       selected = " "
@@ -122,7 +124,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       if len(selected) > 1:
         current_words = self.lblCmd.toPlainText().split(" ")
         current_words[-1] = selected
-        print(current_words)
         self.insert_text(current_words[-1] + " ")
         # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
       else:
@@ -150,7 +151,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if self.interval == 1:
       self.ui_pause.emit(True)
       self.target = result
-      if len(self.labels[self.row][self.col].text()) > 1 or result == 0:
+      # if len(self.labels[self.row][self.col].text()) > 1 or result == 0:
+      if self.autocomplete:
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
       else:
         self.ui_freeze.emit(True)
@@ -250,7 +252,22 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
             animation = QPropertyAnimation(x, b'font_size', self)
             animation.setDuration(config.ANIMATION_DURATION)
             animation.setStartValue(x.font_size)
-            animation.setEndValue(min(label_width, label_height) / 2)
+            if len(x.text()) > 1:
+              selected_size = min(label_width, label_height)/2
+              l = QLabel()
+              while True:
+                l.setFont(QFont("MONO", selected_size))
+                r = l.fontMetrics().boundingRect(x.text())
+                if r.width() < l.width():
+                  break
+                selected_size //= 2
+              print("selected: ", selected_size)
+              print("bound: ", r.width())
+              print("label: ", x.width())
+              animation.setEndValue(selected_size)
+            else:
+              animation.setEndValue(min(label_width, label_height) / 2)
+
             animation.setEasingCurve(easing_curve)
             animation_group.addAnimation(animation)
 
@@ -286,7 +303,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def receive_predicted_words(self, words):
     self.unfreeze()
-    if len(words) < 3:
+    self.autocomplete = True
+    if len(words) == 0:
       QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
     else:
       self.interval = 2
@@ -297,8 +315,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       idx = 0
       for i in range(self.interval):
         for j in range(self.interval):
-          if idx > 0:
-            self.labels[i+self.row][j+self.col].setText(words[idx - 1][0])
+          if idx > 0 and idx <= len(words):
+            label = self.labels[i+self.row][j+self.col]
+            label.setText(words[idx - 1][0])
+
           idx += 1
       QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
