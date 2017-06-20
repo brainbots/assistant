@@ -124,10 +124,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       if len(selected) > 1:
         current_words = self.lblCmd.toPlainText().split(" ")
         current_words[-1] = selected
-        self.insert_text(current_words[-1] + " ")
+        self.insert_text(" ".join(current_words) + " ")
         # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
       else:
-        self.insert_text(selected)
+        self.insert_text(self.lblCmd.toPlainText() + selected)
         # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
     self.row, self.col, self.interval = 0, 0, 8
     self.loadCharacters()
@@ -300,6 +300,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def insert_text(self, s):
-    self.lblCmd.moveCursor(QTextCursor.End)
-    self.lblCmd.textCursor().insertText(s)
+    # self.lblCmd.moveCursor(QTextCursor.End)
+    self.lblCmd.setPlainText(s)
+    # self.lblCmd.textCursor().insertText(s)
     self.lblCmd.moveCursor(QTextCursor.End)
