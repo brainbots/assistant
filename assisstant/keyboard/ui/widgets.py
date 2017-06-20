@@ -49,6 +49,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         'weather in london,gb?'
     ]
 
+    self.history = []
+
     self.wdg = QWidget(self.centralWidget)
     lout = QVBoxLayout(self.wdg)
     self.wdg.hide()
@@ -112,7 +114,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       selected = " "
     # for testing
     # selected = "?"
-    if selected == "⏎":
+    elif selected == "⌫":
+      self.undo_insert()
+    elif selected == "⏎":
       # for testing
       self.ui_freeze.emit(True)
       if len(self.queries) == 0:
@@ -301,6 +305,14 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def insert_text(self, s):
     # self.lblCmd.moveCursor(QTextCursor.End)
-    self.lblCmd.setPlainText(s)
+    self.lblCmd.setText(s)
     # self.lblCmd.textCursor().insertText(s)
     self.lblCmd.moveCursor(QTextCursor.End)
+    self.history.append(s)
+
+  def undo_insert(self):
+    if len(self.history) > 0:
+      self.history.pop()
+      s = self.history[-1]
+      print("state: ", s)
+      self.insert_text(s)

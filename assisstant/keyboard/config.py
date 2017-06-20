@@ -33,9 +33,9 @@ CHARS = ["abcdqrst",
          "efghuvwx",
          "ijklyz.,",
          "mnop\"'?&",
-         "1234$@^!",
+         "1234⌫@$!",
          "5678~_{}",
-         "90-+()[]",
-         "*/^=<>␣⏎"]
+         "90-+()[␣",
+         "*/^=<>]⏎"]
 
 AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete"
