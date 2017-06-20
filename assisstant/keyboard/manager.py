@@ -50,7 +50,7 @@ class Manager(QObject):
       if self.is_virtual:
         result = randint(0, 3)
       else:
-        result = itcca.classify(sample, config.FREQ, config.TIME_FLASH_SEC, old_data)
+        result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC, self.old_data)
       self.update_signal.emit(result)
       if not self.paused:
         QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)

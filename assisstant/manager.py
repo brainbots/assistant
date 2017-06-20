@@ -1,4 +1,5 @@
-from PyQt5.QtCore import Qt, QObject
+from PyQt5.QtCore import Qt, QObject, QTimer
+from keyboard import config
 from keyboard.ui.widgets import KeyboardWindow
 import keyboard.manager as Keyboard
 import nlp.nlp_manager as NLP
@@ -29,13 +30,18 @@ class Manager(QObject):
 		self.window.ui_freeze.connect(self.keyboard_manager.freeze_handler)
 		self.window.send_query_signal.connect(self.analyze_query)
 		self.window.autocomplete_signal.connect(self.predict_word)
-		self.keyboard_manager.start()
+		QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.keyboard_manager.start)
 
 	def predict_word(self, query):
 		print(query)
-		words = self.autocomplete_manager.complete(query)
-		print(words)
-		self.window.receive_predicted_words(words)
+		try:
+		  words = self.autocomplete_manager.complete(query)
+		  print(words)
+		  self.window.receive_predicted_words(words)
+		except Exception as e:
+		  print(e)
+		  self.window.receive_predicted_words([])
+
 
 	def analyze_query(self, query):
 		print(query)
