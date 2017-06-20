@@ -2,18 +2,19 @@ from .abstract_bot import AbstractBot
 from bots.action import Action
 class CalculatorBot(AbstractBot):
 	def __init__(self, id):
-		# TODO: Improve the manually-added calculator.calculate intent 
+		# TODO: Improve the manually-added calculator.calculate intent
 		actions = ['calculator.calculate']
 		super().__init__(id, actions)
+		# REQUIRED
+		self.expr = None
 
-	def validate_intent(self, intent):
+	def extract_attr(self, intent):
 		# TODO: Handle sqrt and trignometric operations
-		return True
+		self.expr = intent.query_string
 
-	def execute(self, intent):
-		num_expr = intent.query_string
+	def execute(self):
 		try:
-			result = eval(num_expr)
+			result = eval(self.expr)
 			return Action(
 			    action_type = 'message',
 			    body = result,
@@ -23,6 +24,10 @@ class CalculatorBot(AbstractBot):
 		except Exception as e:
 			# Raise the exception e
 			raise(e)
-	def request_missing_attr(self, intent):
+
+	def request_missing_attr(self):
 	    #TODO: Check for missing attr
+	    return
+
+	def has_missing_attr(self):
 	    return

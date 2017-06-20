@@ -15,28 +15,25 @@ class WeatherBot(AbstractBot):
 	    self.datetime = None
 	    self.unit = None
 
-	def validate_intent(self, intent):
-	    missing_attr_exists = False
+	def extract_attr(self, intent):
 	    if not intent.parameters.get('address'):
-	        return False
+	        return
+
 	    addr = intent.parameters['address']
+
 	    if not self.city:
 	       if (type(intent.parameters['address']) is dict and
 	          (intent.parameters['address'].get('city') or
 	           intent.parameters['address'].get('admin-area'))):
 	           self.city = next(city for city in
 	               [addr.get('city'),addr.get('admin-area')] if city is not None)
-	       else:
-	            missing_attr_exists = True
+
 	    if not self.country:
 	       if (type(intent.parameters['address']) is dict and
 	           intent.parameters['address'].get('country')):
 	           self.country = addr.get('country')
-	       else:
-	            missing_attr_exists = True
-	    return not missing_attr_exists
 
-	def request_missing_attr(self,intent):
+	def request_missing_attr(self):
 	    if not self.city:
 	        return Action(
 		        action_type = 'inquiry',
@@ -51,14 +48,12 @@ class WeatherBot(AbstractBot):
 		        bot = self.id,
 		        keep_context = True)
 
-	def clear(self):
-	  self.city = None
-	  self.country = None
+	def has_missing_attr(self):
+	    return (self.country and self.city)
 
-	def execute(self, intent):
+	def execute(self):
 	    # self.datetime = address.get('datetime')
 	    # self.unit = address.get('unit')
-	    print(self.city,self.country)
 	    try:
 	    	#TODO: Use a Weather API , Don't forget to clear the params
 	    	CLIENT_ID = 'UdLRojHnKB0m0b6ysMvKj'
@@ -85,8 +80,9 @@ class WeatherBot(AbstractBot):
 			    bot = self.id,
 			    keep_context = False)
 	    except Exception as e:
-            # Raise the exception e
-                self.clear()
-                raise(e)
+	        self.clear()
+	        raise(e)
 
-
+	def clear(self):
+	  self.city = None
+	  self.country = None
