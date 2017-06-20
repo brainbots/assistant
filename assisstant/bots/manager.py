@@ -44,16 +44,17 @@ class BotManager:
         # TODO: Raise exception if no bot can process this intent
 
     def activate_bot(self, bot, intent):
-        if bot.validate_intent(intent):
+        bot.extract_attr(intent)
+        if bot.has_missing_attr():
             try:
-                print('ID is ',bot.id)
-                self.partially_active_bot_id = None
-                return bot.execute(intent)
+                self.partially_active_bot_id = bot.id
+                return bot.request_missing_attr(intent)
             except Exception as e:
                 raise(e)
         else:
             try:
-                self.partially_active_bot_id = bot.id
-                return bot.request_missing_attr(intent)
+                print('ID is ',bot.id)
+                self.partially_active_bot_id = None
+                return bot.execute()
             except Exception as e:
                 raise(e)

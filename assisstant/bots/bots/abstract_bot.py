@@ -5,13 +5,17 @@ class AbstractBot(ABC):
 		self.actions = actions
 
 	@abstractmethod
-	def validate_intent(self, intent):
+	def extract_attr(self, intent):
 		return
 
 	@abstractmethod
-	def execute(self, intent):
+	def execute(self):
 		return
 
 	@abstractmethod
-	def request_missing_attr(self, intent):
+	def has_missing_attr(self):
+		return
+
+	@abstractmethod
+	def request_missing_attr(self):
 		return
