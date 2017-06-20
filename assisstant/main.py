@@ -18,7 +18,7 @@ if __name__ == '__main__':
       opt = opt[0]
       if opt == '--headset':
         is_virtual = False
-      elif opt == '--virtual':
+      elif opt == '--virtual' or opt == '--v':
         is_virtual = True
   except getopt.GetoptError as err:
     print(err)

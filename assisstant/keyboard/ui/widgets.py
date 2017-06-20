@@ -96,7 +96,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.wdg.move(wdg_x, wdg_y)
 
   def resizeEvent(self, event):
-    self.animate()
+    self.animate(True)
     self.resizeEmbbedWindow() 
 
   def loadCharacters(self):
@@ -131,7 +131,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
     self.row, self.col, self.interval = 0, 0, 8
     self.loadCharacters()
-    self.updatePositions()
+    self.animate(False)
     QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def update_handler(self, result):
@@ -158,43 +158,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.ui_freeze.emit(True)
         self.autocomplete_signal.emit(self.lblCmd.toPlainText() + self.labels[self.row][self.col].text())
 
-  def updatePositions(self):
-    label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
-    label_height = (self.gridLayout.geometry().height() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
-
-    # TODO: Don't hide the labels that will remain
-    for i in range(8):
-      for j in range(8):
-        self.labels[i][j].hide()
-
-    animation_group = QParallelAnimationGroup(self)
-    for pos in range(4):
-      shiftx, shifty, idx_shiftx, idx_shifty = 0, 0, 0, 0
-      if pos == 0:
-        shiftx = config.GRIDLAYOUT_MARGIN
-        shifty = config.GRIDLAYOUT_MARGIN
-      elif pos == 1:
-        shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
-        shifty = config.GRIDLAYOUT_MARGIN
-        idx_shiftx = self.interval //2
-      elif pos == 2:
-        shiftx = config.GRIDLAYOUT_MARGIN
-        shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
-        idx_shifty = self.interval //2
-      elif pos == 3:
-        shiftx = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
-        shifty = config.GRIDLAYOUT_MARGIN + config.GRIDLAYOUT_SPACING
-        idx_shiftx = self.interval //2
-        idx_shifty = self.interval //2
-
-      for i in range(idx_shifty,self.interval//2 + idx_shifty):
-        for j in range(idx_shiftx,self.interval//2 + idx_shiftx):
-          x = self.labels[i + self.row][j + self.col]
-          x.show()
-          x.set_font_size(self.initial_font)
-          x.setGeometry(QRect(label_width * j + shiftx, label_height * i + shifty, label_width, label_height))
-
-  def animate(self):
+  def animate(self, flag = True):
     label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
     label_height = (self.gridLayout.geometry().height() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
 
@@ -229,17 +193,19 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         for j in range(idx_shiftx, ceil(self.interval/2) + idx_shiftx):
           x = self.labels[i + self.row][j + self.col]
           x.show()
+          if len(x.text()) > 1:
+            x.font_size = 1
           if self.interval == 8:
             # TODO: Use proper font size
             x.set_font_size(self.initial_font)
             x.setGeometry(QRect(label_width * j + shiftx, label_height * i + shifty, label_width, label_height))
-          else:
+          elif flag:
             easing_curve = QEasingCurve.InQuad
             animation = QPropertyAnimation(x, b'geometry', self)
             animation.setDuration(config.ANIMATION_DURATION)
             animation.setStartValue(x.geometry())
             if self.interval != 1:
-              animation.setEndValue(QRect(label_width * j + shiftx , label_height * i +shifty , label_width, label_height))
+              animation.setEndValue(QRect(label_width * j + shiftx , label_height * i + shifty , label_width, label_height))
             else:
               grdWidth = self.gridLayout.geometry().width()
               grdHeight = self.gridLayout.geometry().height()
@@ -258,9 +224,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
               while True:
                 l.setFont(QFont("MONO", selected_size))
                 r = l.fontMetrics().boundingRect(x.text())
-                if r.width() < l.width():
+                if r.width() < x.width():
                   break
-                selected_size //= 2
+                selected_size //= 1.5
               print("selected: ", selected_size)
               print("bound: ", r.width())
               print("label: ", x.width())
@@ -271,7 +237,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
             animation.setEasingCurve(easing_curve)
             animation_group.addAnimation(animation)
 
-      animation_group.start()
+      if flag:
+        animation_group.start()
 
   def flash(self):
     for box in self.boxes:
@@ -304,22 +271,32 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def receive_predicted_words(self, words):
     self.unfreeze()
     self.autocomplete = True
-    if len(words) == 0:
+    if len(words) < 3:
       QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
     else:
-      self.interval = 2
-      selected_char = self.labels[self.row][self.col].text()
-      self.row, self.col = 0, 0
-      self.labels[self.row][self.col].setText(selected_char)
-      self.updatePositions()
-      idx = 0
-      for i in range(self.interval):
-        for j in range(self.interval):
-          if idx > 0 and idx <= len(words):
-            label = self.labels[i+self.row][j+self.col]
-            label.setText(words[idx - 1][0])
+      # words = [(self.labels[self.row][self.col].text(),0)] + words
+      # should retain them, without any changes
+      # self.row, self.col = 0, 0
 
-          idx += 1
+      if self.target == 0:
+        pass
+      elif self.target ==1:
+        self.col -= 1 
+      elif self.target ==2:
+        self.row -= 1 
+      elif self.target ==3:
+        self.row -= 1 
+        self.col -= 1 
+
+      idx = 0
+      for i in range(2):
+        for j in range(2):
+          if 2*i + j != self.target:
+            self.labels[self.row + i][self.col + j].setText(words[idx][0])
+            idx += 1
+
+      self.interval = 2
+      self.animate(False)
       QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def insert_text(self, s):
