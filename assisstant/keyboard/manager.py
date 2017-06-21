@@ -18,6 +18,8 @@ class Manager(QObject):
     self.device.collect_signal.connect(self.device_update)
     self.paused = False
     self.old_data = getUserDatasets()
+    self.seq = [1,1,1,1,1,1,0,1,3,0,0,0]
+    # self.seq = []
 
   def pause_handler(self, paused):
     self.paused = paused
@@ -48,8 +50,11 @@ class Manager(QObject):
     if not collecting:
       sample, _quality = data
       if self.is_virtual:
-        result = randint(0, 3)
-        result = 3
+        if len(self.seq) > 0:
+          result = self.seq.pop(0)
+        else:
+          result = randint(0, 3)
+          # result = 1
       else:
         result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC, self.old_data)
       self.update_signal.emit(result)
