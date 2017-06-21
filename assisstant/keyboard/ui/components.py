@@ -1,6 +1,28 @@
-from PyQt5.QtWidgets import QOpenGLWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QOpenGLWidget, QLabel
+from PyQt5.QtCore import Qt, pyqtProperty
 from PyQt5.QtGui import QPainter, QBrush, QFont, QPen, QColor
+
+
+class CustomLabel(QLabel):
+  def __init__(self, parent, size):
+    super().__init__()
+    self.setParent(parent)
+    self._font_size = size
+    self.setFont(QFont("MONO", size))
+
+  @pyqtProperty(int)
+  def font_size(self):
+    return self._font_size
+
+  @font_size.setter
+  def font_size(self, size):
+    self._font_size = size
+    self.setFont(QFont("MONO", size))
+
+  def set_font_size(self, size):
+    self._font_size = size
+    self.setFont(QFont("MONO", size))
+
 
 class FlashingBox(QOpenGLWidget):
   def __init__(self, parent, freq=1, color=Qt.black):

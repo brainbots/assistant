@@ -6,28 +6,7 @@ from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QVBoxLayout
 
 from keyboard import config
 from .keyboard_ui import Ui_KeyboardWindow
-
-
-class CustomLabel(QLabel):
-  def __init__(self, parent, size):
-    super().__init__()
-    self.setParent(parent)
-    self._font_size = size
-    self.setFont(QFont("MONO", size))
-
-  @pyqtProperty(int)
-  def font_size(self):
-    return self._font_size
-
-  @font_size.setter
-  def font_size(self, size):
-    self._font_size = size
-    self.setFont(QFont("MONO", size))
-
-  def set_font_size(self, size):
-    self._font_size = size
-    self.setFont(QFont("MONO", size))
-
+from .components import CustomLabel
 
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   ui_pause = pyqtSignal(bool)
