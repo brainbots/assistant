@@ -30,6 +30,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         'Search google for emotiv',
         'What is the weather?',
         'in cairo',
+        'in egypt',
         'weather in london,gb?'
     ]
 
@@ -148,23 +149,28 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     # selected = "?"
     elif selected == "⌫":
       self.undo_insert()
-    elif selected == "⏎":
+    elif selected == "⏎" or True:
       # for testing
       self.ui_freeze.emit(True)
       if len(self.queries) == 0:
-        self.send_query_signal.emit('2+2')
+        self.send_query_signal.emit(self.lblCmd.toPlainText())
+        self.insert_text('')
       else:
         self.send_query_signal.emit(self.queries.pop(0))
       # self.send_query_signal.emit(self.lblCmd.toPlainText())
     else:
+      s = ""
       if len(selected) > 1:
         current_words = self.lblCmd.toPlainText().split(" ")
         current_words[-1] = selected
-        self.insert_text(" ".join(current_words) + " ")
+        s = " ".join(current_words) + " "
+        self.insert_text(s)
         # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
       else:
-        self.insert_text(self.lblCmd.toPlainText() + selected)
+        s = self.lblCmd.toPlainText() + selected
+        self.insert_text(s)
         # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
+      self.history.append(s)
     self.row, self.col, self.interval = 0, 0, self.max_interval
     self.loadCharacters()
     self.animate(False)
@@ -355,11 +361,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.lblCmd.setText(s)
     # self.lblCmd.textCursor().insertText(s)
     self.lblCmd.moveCursor(QTextCursor.End)
-    self.history.append(s)
 
   def undo_insert(self):
     if len(self.history) > 0:
       self.history.pop()
-      s = self.history[-1]
+      s = self.history[-1] if len(self.history) > 0 else ''
       print("state: ", s)
       self.insert_text(s)
