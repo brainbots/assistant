@@ -6,16 +6,16 @@ class AbstractBot(ABC):
 
 	@abstractmethod
 	def extract_attr(self, intent):
-		return
+		pass
 
 	@abstractmethod
 	def execute(self):
-		return
+		pass
 
 	@abstractmethod
 	def has_missing_attr(self):
-		return
+		pass
 
 	@abstractmethod
 	def request_missing_attr(self):
-		return
+		pass

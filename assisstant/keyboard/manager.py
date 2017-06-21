@@ -49,6 +49,7 @@ class Manager(QObject):
       sample, _quality = data
       if self.is_virtual:
         result = randint(0, 3)
+        result = 3
       else:
         result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC, self.old_data)
       self.update_signal.emit(result)

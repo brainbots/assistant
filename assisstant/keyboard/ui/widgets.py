@@ -16,6 +16,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
+    self.chars = config.CHARS
+    self.commands = []
+    self.max_interval = len(self.chars[0])
+    self.embedded_mode = False
     self.initial_font = 17
     self.setupUi(self)
     self.target = None
@@ -23,6 +27,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
     # for testing
     self.queries = [
+        'Search google for emotiv',
         'What is the weather?',
         'in cairo',
         'weather in london,gb?'
@@ -41,32 +46,59 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     # TODO: Create label for the undo box
 
     self.labels = [list()]
-    self.row, self.col, self.interval = 0, 0, 8
-
+    self.row, self.col, self.interval = 0, 0, self.max_interval
+    
+    for i in range(4):
+      label = CustomLabel(self, self.initial_font)
+      label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.5);}")
+      label.resize(100, 100)
+      label.setAttribute(Qt.WA_TranslucentBackground)
+      label.setAlignment(Qt.AlignCenter)
+      label.hide()
+      self.commands.append(label)
+    
     for i in range(self.interval):
       self.labels.append(list())
       for j in range(self.interval):
         # TODO: Use proper font size
         label = CustomLabel(self, self.initial_font)
-        label.setText(config.CHARS[i][j])
+        label.setText(self.chars[i][j])
         label.setStyleSheet("QLabel { color : rgba(255, 255, 255, 0.5); }")
         label.setAttribute(Qt.WA_TranslucentBackground)
         label.setAlignment(Qt.AlignCenter)
         label.show()
         self.labels[i].append(label)
 
-  def embedWindow(self, hwnd):
+  def embedWindow(self, hwnd, labels):
+    self.embedded_mode = True
+    self.wdg.show()
     wnd = QWindow.fromWinId(hwnd)
     self.wnd_container = self.createWindowContainer(wnd, self, Qt.FramelessWindowHint)
     self.wdg.layout().addWidget(self.wnd_container)
-    self.wdg.show()
+
+    self.hideChars()
+    
+    for i in range(len(self.commands)):
+      self.commands[i].setText(labels[i])
+      self.boxes[i].saveGeometry()
+      self.commands[i].show()
+
+    self.resizeEmbbedWindow()
 
   def unembedWindow(self):
+    self.embedded_mode = False
     # The embedded window is remove but the external process is still running.
     # The external process termination should be handled by it's owner (probably a bot)
     self.wnd_container.deleteLater()
     self.wnd_container = None
     self.wdg.hide()
+
+    for i in range(len(self.commands)):
+      self.commands[i].setText("")
+      self.boxes[i].restoreGeomtry()
+      self.commands[i].hide()
+
+    self.resetCharacters()
 
   def resizeEmbbedWindow(self):
     parent_w, parent_h = self.centralWidget.width(), self.centralWidget.height()
@@ -76,6 +108,27 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.wdg.resize(wdg_w, wdg_h)
     self.wdg.move(wdg_x, wdg_y)
 
+    if not self.embedded_mode:
+      return
+
+    grid_rect = self.gridLayout.geometry()
+    grid_w, grid_h = grid_rect.width(), grid_rect.height()
+    grid_x, grid_y = grid_rect.x(), grid_rect.y()
+
+    for i in range(4):
+      label = self.commands[i]
+      if i == 0:
+        label.move(grid_x, grid_y)
+      elif i == 1:
+        label.move(grid_x + grid_w - label.width(), grid_y)
+      elif i == 2:
+        label.move(grid_x, grid_y + grid_h - label.height())
+      elif i == 3:
+        label.move(grid_x + grid_w - label.width(), grid_y + grid_h - label.height())
+
+      self.boxes[i].setGeometry(label.geometry())
+ 
+
   def resizeEvent(self, event):
     self.animate(True)
     self.resizeEmbbedWindow() 
@@ -83,7 +136,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def loadCharacters(self):
     for i in range(self.interval):
       for j in range(self.interval):
-        self.labels[i][j].setText(config.CHARS[i][j])
+        self.labels[i][j].setText(self.chars[i][j])
 
   def resetCharacters(self):
     self.target = None
@@ -112,12 +165,14 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       else:
         self.insert_text(self.lblCmd.toPlainText() + selected)
         # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
-    self.row, self.col, self.interval = 0, 0, 8
+    self.row, self.col, self.interval = 0, 0, self.max_interval
     self.loadCharacters()
     self.animate(False)
     QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def update_handler(self, result):
+    if self.embedded_mode:
+        return
     self.interval //= 2
     if result == 0:
       pass
@@ -141,14 +196,21 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.ui_freeze.emit(True)
         self.autocomplete_signal.emit(self.lblCmd.toPlainText() + self.labels[self.row][self.col].text())
 
+
+  def hideChars(self):
+    for i in range(self.max_interval):
+      for j in range(self.max_interval):
+        self.labels[i][j].hide()
+
+
   def animate(self, flag = True):
+    if self.embedded_mode:
+      return
     label_width = (self.gridLayout.geometry().width() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
     label_height = (self.gridLayout.geometry().height() - 2 * config.GRIDLAYOUT_MARGIN - config.GRIDLAYOUT_SPACING) // self.interval
 
     # TODO: Don't hide the labels that will remain
-    for i in range(8):
-      for j in range(8):
-        self.labels[i][j].hide()
+    self.hideChars()
 
     animation_group = QParallelAnimationGroup(self)
     for pos in range(4):
@@ -178,7 +240,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
           x.show()
           if len(x.text()) > 1:
             x.font_size = 1
-          if self.interval == 8:
+          if self.interval == self.max_interval:
             # TODO: Use proper font size
             x.set_font_size(self.initial_font)
             x.setGeometry(QRect(label_width * j + shiftx, label_height * i + shifty, label_width, label_height))
@@ -244,12 +306,18 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def unfreeze(self):
     self.ui_freeze.emit(False)
 
+  #TODO: move to keyboard/manager
+  #TODO: add proper action_handler
   def receive_query_response(self, action):
     if action:
       print(action.type)
       print(action.body)
+
+    if action and action.type != 'embed':
       self.undo.setText(str(action.body))
-    QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
+      QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
+    elif action and action.type == 'embed':
+      self.embedWindow(action.body['hwnd'], action.body['commands'])
 
   def receive_predicted_words(self, words):
     self.unfreeze()
