@@ -70,3 +70,4 @@ class Manager(QObject):
         except Exception as e:
             #TODO: Bots manager failed to find the appropriate bot
             # Notify the user that input is ambiguous
+            pass
