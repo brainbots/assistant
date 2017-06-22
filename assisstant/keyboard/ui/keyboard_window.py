@@ -196,7 +196,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if self.interval == 1:
       self.ui_pause.emit(True)
       self.target = result
-      # if len(self.labels[self.row][self.col].text()) > 1 or result == 0:
       if self.autocomplete:
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
       else:
@@ -292,23 +291,17 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       if flag:
         animation_group.start()
 
-  def flash(self):
-    for box in self.boxes:
-      box.startFlashing()
-
-  def unflash(self):
-    for box in self.boxes:
-      box.stopFlashing()
-
   def flash_handler(self, value):
     if self.interval == 1:
       return
     if value:
       print("Flash: on")
-      self.flash()
+      for box in self.boxes:
+        box.startFlashing()
     else:
       print("Flash: off")
-      self.unflash()
+      for box in self.boxes:
+        box.stopFlashing()
 
   def unfreeze(self):
     self.ui_freeze.emit(False)
