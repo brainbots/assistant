@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QObject, QTimer
 import settings
-from keyboard.ui.widgets import KeyboardWindow
+from keyboard.ui.keyboard_window import KeyboardWindow
 import keyboard.keyboard_manager as Keyboard
 import nlp.nlp_manager as NLP
 import bots.bots_manager as Bots
