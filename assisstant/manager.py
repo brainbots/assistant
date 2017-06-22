@@ -5,6 +5,7 @@ import keyboard.manager as Keyboard
 import nlp.nlp_manager as NLP
 import bots.manager as Bots
 from keyboard.autocomplete.manager import AutoCompleteManager
+import traceback
 from pprint import pprint
 
 class Manager(QObject):
@@ -26,6 +27,13 @@ class Manager(QObject):
 
         self.keyboard_manager.flash_signal.connect(self.window.flash_handler)
         self.keyboard_manager.update_signal.connect(self.window.update_handler)
+
+        # msh lazem b2a, fel pause el kbeera elly fel a5ar el mafrood l2
+        # bs heya el pause de goz2 wa7ed wala 2
+        # wel mafrood aslan 
+        
+        self.keyboard_manager.update_signal.connect(self.window.show_timer)
+
         self.window.ui_pause.connect(self.keyboard_manager.pause_handler)
         self.window.ui_freeze.connect(self.keyboard_manager.freeze_handler)
         self.window.send_query_signal.connect(self.analyze_query)
@@ -47,23 +55,26 @@ class Manager(QObject):
         print(query)
         try:
             intent = self.nlp_manager.get_intent(query)
-            print(intent.action)
-            print(intent.score)
-            print(intent.parameters)
+            if intent:
+	            print(intent.action)
+	            print(intent.score)
+	            print(intent.parameters)
         except Exception as e:
             # TODO: Retry the request again
             # If request fails, notify the user
-            print(e)
+            # print(e.with_traceback())
+            traceback.print_tb(e.__traceback__)
             self.window.receive_query_response(None)
             return
         #try:
-        action = self.bots_manager.run_action(intent)
-        if action.keep_context:
-            self.nlp_manager.keep_contexts()
-        else:
-            self.nlp_manager.reset_contexts()
-        #Call or emit a signal to the keyboard
-        self.window.receive_query_response(action)
+        if intent:
+	        action = self.bots_manager.run_action(intent)
+	        if action.keep_context:
+	            self.nlp_manager.keep_contexts()
+	        else:
+	            self.nlp_manager.reset_contexts()
+	        #Call or emit a signal to the keyboard
+	        self.window.receive_query_response(action)
         #except Exception as e:
             #TODO: Bots manager failed to find the appropriate bot
             # Notify the user that input is ambiguous

@@ -27,11 +27,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
     # for testing
     self.queries = [
-        'Search google for emotiv',
-        'What is the weather?',
-        'in cairo',
-        'in egypt',
-        'weather in london,gb?'
+        # 'Search google for emotiv',
+        # 'What is the weather?',
+        # 'in cairo',
+        # 'in egypt',
+        # 'weather in london,gb?'
     ]
 
     self.history = []
@@ -133,6 +133,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def resizeEvent(self, event):
     self.animate(True)
     self.resizeEmbbedWindow() 
+    self.timer_init()
 
   def loadCharacters(self):
     for i in range(self.interval):
@@ -149,10 +150,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     # selected = "?"
     elif selected == "⌫":
       self.undo_insert()
-    elif selected == "⏎" or True:
+    elif selected == "⏎":
       # for testing
       self.ui_freeze.emit(True)
       if len(self.queries) == 0:
+        # self.send_query_signal.emit('2+2')
         self.send_query_signal.emit(self.lblCmd.toPlainText())
         self.insert_text('')
       else:
@@ -207,6 +209,34 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     for i in range(self.max_interval):
       for j in range(self.max_interval):
         self.labels[i][j].hide()
+
+  # reposition timer
+  def timer_init(self):
+    parent_w, parent_h = self.centralWidget.width(), self.centralWidget.height()
+    parent_x, parent_y = self.centralWidget.x(), self.centralWidget.y()
+    size = self.timer_lbl.sizeHint()
+    wdg_w, wdg_h = size.width(), size.height()
+    wdg_x, wdg_y = parent_x + (parent_w // 2) - (wdg_w // 2), parent_y + (parent_h // 2) - (wdg_h)
+
+    self.timer_lbl.resize(wdg_w, wdg_h)
+    self.timer_lbl.move(wdg_x, wdg_y)
+
+  def show_timer(self, paused):
+    print("Show Timer: ", paused)
+    if paused:
+      self.timer_lbl.show()
+      n = self.startTimer(1000, Qt.PreciseTimer)
+      self.countdown = config.TIME_REST_SEC
+      self.timer_lbl.setText(str(self.countdown))
+    else:
+      self.timer_lbl.hide()
+
+  def timerEvent(self, event):
+    self.countdown -= 1
+    self.timer_lbl.setText(str(self.countdown))
+    if self.countdown == 0:
+      self.timer_lbl.hide()
+      self.killTimer(event.timerId())
 
 
   def animate(self, flag = True):
@@ -278,9 +308,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
                 if r.width() < x.width():
                   break
                 selected_size //= 1.5
-              print("selected: ", selected_size)
-              print("bound: ", r.width())
-              print("label: ", x.width())
               animation.setEndValue(selected_size)
             else:
               animation.setEndValue(min(label_width, label_height) / 2)

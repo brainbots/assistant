@@ -86,6 +86,14 @@ class Ui_KeyboardWindow(object):
         self.undo.setObjectName("undo")
         self.undo.setFont(QFont("Mono", 18))
         self.undo.setFrameStyle(1)
+
+        self.timer_lbl = QtWidgets.QLabel(self.centralWidget)
+        self.timer_lbl.setStyleSheet("color: white;")
+        self.timer_lbl.setText("5")
+        self.timer_lbl.setFont(QFont("Mono", 26))
+        self.timer_lbl.hide()
+
+
         KeyboardWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(KeyboardWindow)
