@@ -8,8 +8,6 @@ from keyboard.datasets.reader import getUserDatasets
 from random import randint
 
 class Manager(QObject):
-  flash_signal = pyqtSignal(bool)
-  update_signal = pyqtSignal(int)
 
   def __init__(self, is_virtual, parent=None):
     super(Manager, self).__init__(parent)
@@ -18,8 +16,6 @@ class Manager(QObject):
 
     self.autocomplete_manager = AutoCompleteManager()
 
-    self.flash_signal.connect(self.keyboard_window.flash_handler)
-    self.update_signal.connect(self.keyboard_window.update_handler)
     self.keyboard_window.ui_pause.connect(self.pause_handler)
     self.keyboard_window.ui_freeze.connect(self.freeze_handler)
 
@@ -63,7 +59,7 @@ class Manager(QObject):
     if self.freeze:
       return
 
-    self.flash_signal.emit(collecting)
+    self.keyboard_window.flash_handler(collecting)
     if not collecting:
       sample, _quality = data
       if self.is_virtual:
@@ -74,7 +70,7 @@ class Manager(QObject):
           # result = 1
       else:
         result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
-      self.update_signal.emit(result)
+      self.keyboard_window.update_handler(result)
       if not self.paused:
         QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
 
