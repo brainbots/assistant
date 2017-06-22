@@ -6,6 +6,7 @@ import nlp.nlp_manager as NLP
 import bots.manager as Bots
 from keyboard.autocomplete.manager import AutoCompleteManager
 from pprint import pprint
+import traceback
 
 class Manager(QObject):
 
@@ -42,11 +43,12 @@ class Manager(QObject):
           print(e)
           self.window.receive_predicted_words([])
 
-
     def analyze_query(self, query):
         print(query)
         try:
             intent = self.nlp_manager.get_intent(query)
+            # TODO: Ensure that the nlp_manager
+            # doesn't return a None object
             print(intent.action)
             print(intent.score)
             print(intent.parameters)
@@ -54,18 +56,17 @@ class Manager(QObject):
             # TODO: Retry the request again
             # If request fails, notify the user
             print(e)
+            traceback.print_tb(e.__traceback__)
             self.window.receive_query_response(None)
             return
-        #try:
-        action = self.bots_manager.run_action(intent)
-        if action.keep_context:
-            self.nlp_manager.keep_contexts()
-        else:
-            self.nlp_manager.reset_contexts()
+        try:
+            action = self.bots_manager.run_action(intent)
+            if action.keep_context:
+                self.nlp_manager.keep_contexts()
+            else:
+                self.nlp_manager.reset_contexts()
         #Call or emit a signal to the keyboard
-        self.window.receive_query_response(action)
-        #except Exception as e:
+            self.window.receive_query_response(action)
+        except Exception as e:
             #TODO: Bots manager failed to find the appropriate bot
             # Notify the user that input is ambiguous
-            #raise(e)
-

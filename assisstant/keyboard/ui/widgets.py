@@ -143,23 +143,24 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.target = None
     self.autocomplete = False
     selected = self.labels[self.row][self.col].text()
-    if selected == "␣":
-      selected = " "
-    # for testing
-    # selected = "?"
-    elif selected == "⌫":
+    if selected == "⌫":
       self.undo_insert()
-    elif selected == "⏎" or True:
-      # for testing
+    elif selected == "⏎":
       self.ui_freeze.emit(True)
+      '''
       if len(self.queries) == 0:
         self.send_query_signal.emit(self.lblCmd.toPlainText())
         self.insert_text('')
       else:
         self.send_query_signal.emit(self.queries.pop(0))
-      # self.send_query_signal.emit(self.lblCmd.toPlainText())
+        #self.send_query_signal.emit('2+2')
+      '''
+      self.send_query_signal.emit(self.lblCmd.toPlainText())
     else:
       s = ""
+      if selected == "␣":
+        selected = " "
+
       if len(selected) > 1:
         current_words = self.lblCmd.toPlainText().split(" ")
         current_words[-1] = selected
@@ -318,6 +319,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if action:
       print(action.type)
       print(action.body)
+      
+      self.lblCmd.insert_text("")
 
     if action and action.type != 'embed':
       self.undo.setText(str(action.body))

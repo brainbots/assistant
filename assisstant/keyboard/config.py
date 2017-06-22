@@ -13,8 +13,8 @@ FREQ = [
 # 
 # TODO: Adjust colors
 COLOR   =   [Qt.green, Qt.green, Qt.green, Qt.green, Qt.black]
-TIME_FLASH_SEC  = 1
-TIME_REST_SEC   = 0.3
+TIME_FLASH_SEC  = 3
+TIME_REST_SEC   = 4
 ANIMATION_DURATION = 300
 GRIDLAYOUT_MARGIN = 0
 GRIDLAYOUT_SPACING = 100
