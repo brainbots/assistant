@@ -1,10 +1,10 @@
 from PyQt5.QtCore import Qt, QObject, QTimer
 from keyboard import config
 from keyboard.ui.widgets import KeyboardWindow
-import keyboard.manager as Keyboard
+import keyboard.keyboard_manager as Keyboard
 import nlp.nlp_manager as NLP
-import bots.manager as Bots
-from keyboard.autocomplete.manager import AutoCompleteManager
+import bots.bots_manager as Bots
+from keyboard.autocomplete.autocomplete_manager import AutoCompleteManager
 from pprint import pprint
 import traceback
 
