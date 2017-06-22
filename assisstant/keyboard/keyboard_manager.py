@@ -7,10 +7,10 @@ from keyboard.classification import cca, itcca
 from keyboard.datasets.reader import getUserDatasets
 from random import randint
 
-class Manager(QObject):
+class KeyboardManager(QObject):
 
   def __init__(self, is_virtual, parent=None):
-    super(Manager, self).__init__(parent)
+    super(KeyboardManager, self).__init__(parent)
     self.keyboard_window = KeyboardWindow()
     self.keyboard_window.showMaximized()
 

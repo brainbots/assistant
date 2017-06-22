@@ -11,7 +11,7 @@ class Manager(QObject):
     def __init__(self, is_virtual, parent=None):
         super(Manager, self).__init__(parent)
 
-        self.keyboard_manager = Keyboard.Manager(is_virtual)
+        self.keyboard_manager = Keyboard.KeyboardManager(is_virtual)
         self.nlp_manager = NLP.NlpManager()
         self.bots_manager = Bots.BotManager()
 
