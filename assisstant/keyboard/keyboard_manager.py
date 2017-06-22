@@ -16,22 +16,22 @@ class KeyboardManager(QObject):
 
     self.autocomplete_manager = AutoCompleteManager()
 
-    self.keyboard_window.ui_pause.connect(self.pause_handler)
-    self.keyboard_window.ui_freeze.connect(self.freeze_handler)
+    # self.keyboard_window.ui_pause.connect(self.pause_handler)
+    # self.keyboard_window.ui_freeze.connect(self.freeze_handler)
 
     self.keyboard_window.autocomplete_signal.connect(self.predict_word)
 
     QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.start)
 
-
     self.is_virtual = is_virtual
-    self.freeze = False
     self.device = device.Device(callback=self.device_update,
-                                collect_time=settings.TIME_FLASH_SEC, is_virtual=self.is_virtual)
+                                collect_time=settings.TIME_FLASH_SEC,
+                                is_virtual=self.is_virtual)
     self.device.collect_signal.connect(self.device_update)
+    self.freeze = False
     self.paused = False
     self.old_data = getUserDatasets()
-    self.seq = [1,1,1,1,1,1,0,1,3,0,0,0]
+    self.seq = [1,1,1,1,1,1,0,1,3,3,3,3,3,3]
     # self.seq = []
 
   def pause_handler(self, paused):
@@ -42,9 +42,9 @@ class KeyboardManager(QObject):
     else:
       self.start()
 
-  def freeze_handler(self, x):
-    self.freeze = x
-    if not x:
+  def freeze_handler(self, freeze):
+    self.freeze = freeze
+    if not freeze:
       self.start()
 
   def start(self):
@@ -56,10 +56,13 @@ class KeyboardManager(QObject):
     self.device.stop()
 
   def device_update(self, collecting, data=None):
+    print("device update ", collecting)
     if self.freeze:
       return
 
     self.keyboard_window.flash_handler(collecting)
+
+    # recording finished
     if not collecting:
       sample, _quality = data
       if self.is_virtual:
@@ -67,7 +70,6 @@ class KeyboardManager(QObject):
           result = self.seq.pop(0)
         else:
           result = randint(0, 3)
-          # result = 1
       else:
         result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
       self.keyboard_window.update_handler(result)

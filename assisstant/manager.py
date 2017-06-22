@@ -15,6 +15,8 @@ class Manager(QObject):
         self.nlp_manager = NLP.NlpManager()
         self.bots_manager = Bots.BotManager()
 
+        # el mafrood mafeesh direct signal mn el window le hena
+        # self.keyboard_manager.send_query_signal(self.analyze_query)
         self.keyboard_manager.keyboard_window.send_query_signal.connect(self.analyze_query)
 
     def analyze_query(self, query):
