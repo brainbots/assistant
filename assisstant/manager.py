@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QObject, QTimer
-from keyboard import config
+import settings
 from keyboard.ui.widgets import KeyboardWindow
 import keyboard.keyboard_manager as Keyboard
 import nlp.nlp_manager as NLP
@@ -31,7 +31,7 @@ class Manager(QObject):
         self.window.ui_freeze.connect(self.keyboard_manager.freeze_handler)
         self.window.send_query_signal.connect(self.analyze_query)
         self.window.autocomplete_signal.connect(self.predict_word)
-        QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.keyboard_manager.start)
+        QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.keyboard_manager.start)
 
     def predict_word(self, query):
         print(query)

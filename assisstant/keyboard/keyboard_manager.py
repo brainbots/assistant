@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QObject, QTimer, pyqtSignal
 from keyboard.input import device
-from keyboard import config
+import settings as config
 from keyboard.classification import cca, itcca
 from keyboard.datasets.reader import getUserDatasets
 from random import randint

@@ -4,7 +4,7 @@ from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QP
 from PyQt5.QtGui import QFont, QWindow, QTextCursor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QVBoxLayout
 
-from keyboard import config
+import settings as config
 from .keyboard_ui import Ui_KeyboardWindow
 from .components import CustomLabel
 
