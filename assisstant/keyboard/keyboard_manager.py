@@ -1,6 +1,8 @@
 from PyQt5.QtCore import Qt, QObject, QTimer, pyqtSignal
+from keyboard.ui.keyboard_window import KeyboardWindow
+from keyboard.autocomplete.autocomplete_manager import AutoCompleteManager
 from keyboard.input import device
-import settings as config
+import settings
 from keyboard.classification import cca, itcca
 from keyboard.datasets.reader import getUserDatasets
 from random import randint
@@ -11,10 +13,25 @@ class Manager(QObject):
 
   def __init__(self, is_virtual, parent=None):
     super(Manager, self).__init__(parent)
+    self.keyboard_window = KeyboardWindow()
+    self.keyboard_window.showMaximized()
+
+    self.autocomplete_manager = AutoCompleteManager()
+
+    self.flash_signal.connect(self.keyboard_window.flash_handler)
+    self.update_signal.connect(self.keyboard_window.update_handler)
+    self.keyboard_window.ui_pause.connect(self.pause_handler)
+    self.keyboard_window.ui_freeze.connect(self.freeze_handler)
+
+    self.keyboard_window.autocomplete_signal.connect(self.predict_word)
+
+    QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.start)
+
+
     self.is_virtual = is_virtual
     self.freeze = False
     self.device = device.Device(callback=self.device_update,
-                                collect_time=config.TIME_FLASH_SEC, is_virtual=self.is_virtual)
+                                collect_time=settings.TIME_FLASH_SEC, is_virtual=self.is_virtual)
     self.device.collect_signal.connect(self.device_update)
     self.paused = False
     self.old_data = getUserDatasets()
@@ -56,8 +73,18 @@ class Manager(QObject):
           result = randint(0, 3)
           # result = 1
       else:
-        result = cca.classify(sample, config.FREQ, config.TIME_FLASH_SEC, self.old_data)
+        result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
       self.update_signal.emit(result)
       if not self.paused:
-        QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
+        QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
 
+  def predict_word(self, query):
+    print(query)
+    try:
+      words = self.autocomplete_manager.complete(query)
+      print(words)
+      self.keyboard_window.receive_predicted_words(words)
+    except Exception as e:
+      # print(e)
+      traceback.print_tb(e.__traceback__)
+      self.keyboard_window.receive_predicted_words([])
