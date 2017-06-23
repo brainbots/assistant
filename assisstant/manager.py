@@ -17,7 +17,7 @@ class Manager(QObject):
 
         # el mafrood mafeesh direct signal mn el window le hena
         # self.keyboard_manager.send_query_signal(self.analyze_query)
-        self.keyboard_manager.keyboard_window.send_query_signal.connect(self.analyze_query)
+        self.keyboard_manager.send_query_signal.connect(self.analyze_query)
 
     def analyze_query(self, query):
         print(query)
