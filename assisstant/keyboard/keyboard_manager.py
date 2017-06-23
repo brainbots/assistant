@@ -6,6 +6,7 @@ import settings
 from keyboard.classification import cca, itcca
 from keyboard.datasets.reader import getUserDatasets
 from random import randint
+import traceback
 
 class KeyboardManager(QObject):
 
@@ -28,37 +29,39 @@ class KeyboardManager(QObject):
                                 collect_time=settings.TIME_FLASH_SEC,
                                 is_virtual=self.is_virtual)
     self.device.collect_signal.connect(self.device_update)
-    self.freeze = False
+    # self.freeze = False
     self.paused = False
     self.old_data = getUserDatasets()
-    self.seq = [1,1,1,1,1,1,0,1,3,3,3,3,3,3]
+    self.seq = [1,1,1,1,3,3,3,3,3,3]
     # self.seq = []
 
-  def pause_handler(self, paused):
-    self.paused = paused
-    print("Paused: ", paused)
-    if paused or self.freeze:
-      self.stop()
-    else:
-      self.start()
+  # def pause_handler(self, paused):
+  #   self.paused = paused
+  #   print("Paused: ", paused)
+  #   if paused or self.freeze:
+  #     self.stop()
+  #   else:
+  #     self.start()
 
-  def freeze_handler(self, freeze):
-    self.freeze = freeze
-    if not freeze:
-      self.start()
+  # def freeze_handler(self, freeze):
+  #   self.freeze = freeze
+  #   if not freeze:
+  #     self.start()
 
   def start(self):
-    if not self.paused:
+    # if not self.paused:
       #QTimer.singleShot(1000, Qt.PreciseTimer, self.device.collect)
-      self.device.collect()
+    self.device.collect()
+    self.paused = False
 
   def stop(self):
     self.device.stop()
+    self.paused = True
 
   def device_update(self, collecting, data=None):
     print("device update ", collecting)
-    if self.freeze:
-      return
+    # if self.freeze:
+      # return
 
     self.keyboard_window.flash_handler(collecting)
 
@@ -86,3 +89,18 @@ class KeyboardManager(QObject):
       # print(e)
       traceback.print_tb(e.__traceback__)
       self.keyboard_window.receive_predicted_words([])
+
+  #TODO: move to keyboard/manager
+  #TODO: add proper action_handler
+  def action_handler(self, action):
+    if action:
+      print(action.type)
+      print(action.body)
+      
+      self.keyboard_window.update_text("")
+
+    if action and action.type != 'embed':
+      self.keyboard_window.update_prompt(str(action.body))
+      # QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
+    elif action and action.type == 'embed':
+      self.keyboard_window.embedWindow(action.body['hwnd'], action.body['commands'])
