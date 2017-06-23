@@ -156,11 +156,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         current_words = self.lblCmd.toPlainText().split(" ")
         current_words[-1] = selected
         s = " ".join(current_words) + " "
-        self.update_text(s)
+        self.update_input(s)
         # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
       else:
         s = self.lblCmd.toPlainText() + selected
-        self.update_text(s)
+        self.update_input(s)
         # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
       self.history.append(s)
     self.row, self.col, self.interval = 0, 0, self.max_interval
@@ -168,7 +168,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.animate(False)
     # QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
-  def update_handler(self, result):
+  def update(self, result):
     if self.embedded_mode:
         return
     self.interval //= 2
@@ -293,8 +293,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   # def unfreeze(self):
     # self.ui_freeze.emit(False)
 
-  
-
   def receive_predicted_words(self, words):
     # self.unfreeze()
     self.autocomplete = True
@@ -329,7 +327,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def get_input(self):
     return self.lblCmd.toPlainText()
 
-  def update_text(self, s):
+  def update_input(self, s):
     # self.lblCmd.moveCursor(QTextCursor.End)
     self.lblCmd.setText(s)
     # self.lblCmd.textCursor().insertText(s)
@@ -343,4 +341,4 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.history.pop()
       s = self.history[-1] if len(self.history) > 0 else ''
       print("state: ", s)
-      self.update_text(s)
+      self.update_input(s)
