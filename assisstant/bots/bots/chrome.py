@@ -24,11 +24,11 @@ class ChromeBot(AbstractBot):
       while True:
         wnd = getWindow(criteria)
         if wnd is None:
-          sleep(1)
+          sleep(0.01)
         else:
           break
 
-      return Action(action_type = 'embed', body = {'hwnd': wnd['hwnd'], 'commands': ['x', 'y', 'z', 'a']}, bot = self.id, keep_context = False)
+      return Action(action_type = 'embed', body = {'hwnd': wnd['hwnd'], 'commands': ['↑', '↻', '↓']}, bot = self.id, keep_context = False)
     except Exception as e:
       raise(e)
 
