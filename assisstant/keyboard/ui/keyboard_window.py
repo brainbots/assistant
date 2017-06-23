@@ -9,8 +9,8 @@ from .keyboard_ui import Ui_KeyboardWindow
 from .components import CustomLabel
 
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
-  ui_pause = pyqtSignal(bool)
-  ui_freeze = pyqtSignal(bool)
+  # ui_pause = pyqtSignal(bool)
+  # ui_freeze = pyqtSignal(bool)
   send_query_signal = pyqtSignal(str)
   autocomplete_signal = pyqtSignal(str)
 
@@ -146,11 +146,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if selected == "⌫":
       self.undo_insert()
     elif selected == "⏎":
-      self.ui_freeze.emit(True)
+      # self.ui_freeze.emit(True)
       '''
       if len(self.queries) == 0:
         self.send_query_signal.emit(self.lblCmd.toPlainText())
-        self.insert_text('')
+        self.update_text('')
       else:
         self.send_query_signal.emit(self.queries.pop(0))
         #self.send_query_signal.emit('2+2')
@@ -165,17 +165,17 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         current_words = self.lblCmd.toPlainText().split(" ")
         current_words[-1] = selected
         s = " ".join(current_words) + " "
-        self.insert_text(s)
+        self.update_text(s)
         # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
       else:
         s = self.lblCmd.toPlainText() + selected
-        self.insert_text(s)
+        self.update_text(s)
         # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
       self.history.append(s)
     self.row, self.col, self.interval = 0, 0, self.max_interval
     self.loadCharacters()
     self.animate(False)
-    QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
+    # QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def update_handler(self, result):
     if self.embedded_mode:
@@ -194,12 +194,12 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     QTimer.singleShot(300, Qt.PreciseTimer, self.animate)
 
     if self.interval == 1:
-      self.ui_pause.emit(True)
+      # self.ui_pause.emit(True)
       self.target = result
       if self.autocomplete:
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
       else:
-        self.ui_freeze.emit(True)
+        # self.ui_freeze.emit(True)
         self.autocomplete_signal.emit(self.lblCmd.toPlainText() + self.labels[self.row][self.col].text())
 
 
@@ -303,26 +303,13 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       for box in self.boxes:
         box.stopFlashing()
 
-  def unfreeze(self):
-    self.ui_freeze.emit(False)
+  # def unfreeze(self):
+    # self.ui_freeze.emit(False)
 
-  #TODO: move to keyboard/manager
-  #TODO: add proper action_handler
-  def receive_query_response(self, action):
-    if action:
-      print(action.type)
-      print(action.body)
-      
-      self.lblCmd.insert_text("")
-
-    if action and action.type != 'embed':
-      self.undo.setText(str(action.body))
-      QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
-    elif action and action.type == 'embed':
-      self.embedWindow(action.body['hwnd'], action.body['commands'])
+  
 
   def receive_predicted_words(self, words):
-    self.unfreeze()
+    # self.unfreeze()
     self.autocomplete = True
     if len(words) < 3:
       QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
@@ -350,17 +337,20 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
       self.interval = 2
       self.animate(False)
-      QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
+      # QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
-  def insert_text(self, s):
+  def update_text(self, s):
     # self.lblCmd.moveCursor(QTextCursor.End)
     self.lblCmd.setText(s)
     # self.lblCmd.textCursor().insertText(s)
     self.lblCmd.moveCursor(QTextCursor.End)
+
+  def update_prompt(self, s):
+    self.undo.setText(s)
 
   def undo_insert(self):
     if len(self.history) > 0:
       self.history.pop()
       s = self.history[-1] if len(self.history) > 0 else ''
       print("state: ", s)
-      self.insert_text(s)
+      self.update_text(s)

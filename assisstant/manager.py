@@ -33,7 +33,7 @@ class Manager(QObject):
             # If request fails, notify the user
             print(e)
             traceback.print_tb(e.__traceback__)
-            self.keyboard_manager.keyboard_window.receive_query_response(None)
+            self.keyboard_manager.action_handler(None)
             return
         try:
             action = self.bots_manager.run_action(intent)
@@ -42,7 +42,7 @@ class Manager(QObject):
             else:
                 self.nlp_manager.reset_contexts()
         #Call or emit a signal to the keyboard
-            self.keyboard_manager.keyboard_window.receive_query_response(action)
+            self.keyboard_manager.action_handler(action)
         except Exception as e:
             #TODO: Bots manager failed to find the appropriate bot
             # Notify the user that input is ambiguous
