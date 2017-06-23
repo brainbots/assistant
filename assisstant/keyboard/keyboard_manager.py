@@ -9,6 +9,7 @@ from random import randint
 import traceback
 
 class KeyboardManager(QObject):
+  send_query_signal = pyqtSignal(str)
 
   def __init__(self, is_virtual, parent=None):
     super(KeyboardManager, self).__init__(parent)
@@ -20,7 +21,7 @@ class KeyboardManager(QObject):
     # self.keyboard_window.ui_pause.connect(self.pause_handler)
     # self.keyboard_window.ui_freeze.connect(self.freeze_handler)
 
-    self.keyboard_window.autocomplete_signal.connect(self.predict_word)
+    # self.keyboard_window.autocomplete_signal.connect(self.predict_word)
 
     QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.start)
 
@@ -75,9 +76,21 @@ class KeyboardManager(QObject):
           result = randint(0, 3)
       else:
         result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
-      self.keyboard_window.update_handler(result)
+      char = self.keyboard_window.update_handler(result)
+      if char:
+        self.char_selected(char)
       if not self.paused:
+        # Problem is this gets called after char is selected and device is started before intent response and so a new selection occurs without flashing
         QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
+
+  def char_selected(self, char):
+        print("Selected Character: ", char)
+        query = self.keyboard_window.get_input() + char
+        self.predict_word(query)
+
+        if char == "⏎":
+          self.send_query_signal.emit(self.keyboard_window.get_input())
+          
 
   def predict_word(self, query):
     print(query)
@@ -92,7 +105,7 @@ class KeyboardManager(QObject):
 
   #TODO: move to keyboard/manager
   #TODO: add proper action_handler
-  def action_handler(self, action):
+  def bot_action_handler(self, action):
     if action:
       print(action.type)
       print(action.body)

@@ -146,16 +146,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     if selected == "⌫":
       self.undo_insert()
     elif selected == "⏎":
-      # self.ui_freeze.emit(True)
-      '''
-      if len(self.queries) == 0:
-        self.send_query_signal.emit(self.lblCmd.toPlainText())
-        self.update_text('')
-      else:
-        self.send_query_signal.emit(self.queries.pop(0))
-        #self.send_query_signal.emit('2+2')
-      '''
-      self.send_query_signal.emit(self.lblCmd.toPlainText())
+      print("ENTER!")
     else:
       s = ""
       if selected == "␣":
@@ -199,8 +190,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       if self.autocomplete:
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
       else:
-        # self.ui_freeze.emit(True)
-        self.autocomplete_signal.emit(self.lblCmd.toPlainText() + self.labels[self.row][self.col].text())
+        return self.labels[self.row][self.col].text()
 
 
   def hideChars(self):
@@ -278,9 +268,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
                 if r.width() < x.width():
                   break
                 selected_size //= 1.5
-              print("selected: ", selected_size)
-              print("bound: ", r.width())
-              print("label: ", x.width())
               animation.setEndValue(selected_size)
             else:
               animation.setEndValue(min(label_width, label_height) / 2)
@@ -338,6 +325,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.interval = 2
       self.animate(False)
       # QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
+
+  def get_input(self):
+    return self.lblCmd.toPlainText()
 
   def update_text(self, s):
     # self.lblCmd.moveCursor(QTextCursor.End)
