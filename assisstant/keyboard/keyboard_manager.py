@@ -24,12 +24,14 @@ class KeyboardManager(QObject):
     # self.keyboard_window.ui_freeze.connect(self.freeze_handler)
     # self.keyboard_window.autocomplete_signal.connect(self.predict_word)
 
+    # the loop goes like this
+    # device starts collecting -> call update to start flashing
+    # device finishes collecting -> call update to stop flashing, pause then call device.collect again
     self.device = device.Device(callback=self.device_update,
                                 collect_time=settings.TIME_FLASH_SEC,
                                 is_virtual=self.is_virtual)
 
     self.device.collect_signal.connect(self.device_update)
-
 
     # self.freeze = False
     self.paused = False
@@ -39,36 +41,13 @@ class KeyboardManager(QObject):
     self.seq = [1,1,1,1,3,3,3,3,3,3]
 
     # initial delay
-    QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.start)
+    QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
 
-  # def pause_handler(self, paused):
-  #   self.paused = paused
-  #   print("Paused: ", paused)
-  #   if paused or self.freeze:
-  #     self.stop()
-  #   else:
-  #     self.start()
-
-  # def freeze_handler(self, freeze):
-  #   self.freeze = freeze
-  #   if not freeze:
-  #     self.start()
-
-  def start(self):
-    # if not self.paused:
-      #QTimer.singleShot(1000, Qt.PreciseTimer, self.device.collect)
-    self.device.collect()
-    self.paused = False
-
-  def stop(self):
-    self.device.stop()
-    self.paused = True
-
+  # The passed boolean can be omitted as the function toggles the flashing each time
   def device_update(self, collecting, data=None):
     print("device update ", collecting)
-    # if self.freeze:
-      # return
 
+    # toggle flashing
     self.keyboard_window.flash_handler(collecting)
 
     # recording finished
@@ -86,9 +65,9 @@ class KeyboardManager(QObject):
 
       if char:
         self.char_selected(char)
-      if not self.paused:
-        # Problem is this gets called after char is selected and device is started before intent response and so a new selection occurs without flashing
-        QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
+
+      # Problem is this gets called after char is selected and device is started before intent response and so a new selection occurs without flashing
+      QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
 
   def char_selected(self, char):
         print("Selected Character: ", char)
@@ -97,7 +76,6 @@ class KeyboardManager(QObject):
 
         if char == "⏎":
           self.send_query_signal.emit(self.keyboard_window.get_input())
-          
 
   def predict_word(self, query):
     print(query)
