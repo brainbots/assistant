@@ -2,6 +2,7 @@ from .abstract_bot import AbstractBot
 from bots.action import Action
 import sendgrid
 from sendgrid.helpers.mail import *
+import settings
 
 class MailBot(AbstractBot):
     def __init__(self, id):
@@ -28,7 +29,7 @@ class MailBot(AbstractBot):
                 self.mail_to = intent.parameters['body']
 
     def execute(self):
-        sg = sendgrid.SendGridAPIClient(apikey='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')
+        sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_ACCESS_TOKEN)
         from_email = Email(self.from_email)
         to_email = Email(self.to_email)
         subject = self.subject
