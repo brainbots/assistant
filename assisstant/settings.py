@@ -34,14 +34,14 @@ CHARS = ["abcdqrst",
          "*/^=<>]⏎"]
 
 VIRTUAL_QUERIES =  [
-    'Search google for emotiv',
+    # 'Search google for emotiv',
     'What is the weather?',
     'in cairo',
     'in egypt',
     'weather in london,gb?'
 ]
 
-VIRTUAL_SEQUENCE = [1,1,1,1,3,3,3,3,3,3]
+VIRTUAL_SEQUENCE = [1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 
 # === Autocomplete Settings ===
 
@@ -49,6 +49,14 @@ AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete
 
 
 # === Bots Settings ===
+
+# Default msg when no bot or intent found.
+FALLBACK_PROMPTS = [
+    "Sorry, I don't quite understand.",
+    "Sorry, I don't understand.",
+    "I don't understand.",
+    "Please state what you want more clearly."
+]
 
 # Module path for each active bot
 REGISTERED_BOTS = [

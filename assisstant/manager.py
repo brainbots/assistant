@@ -3,7 +3,7 @@ import settings
 import keyboard.keyboard_manager as Keyboard
 import nlp.nlp_manager as NLP
 import bots.bots_manager as Bots
-from pprint import pprint
+import random
 import traceback
 
 class Manager(QObject):
@@ -32,7 +32,7 @@ class Manager(QObject):
             traceback.print_tb(e.__traceback__)
             print(e)
             # self.keyboard_manager.bot_action_handler(None)
-            self.keyboard_manager.prompt("Sorry, I don't understand.")
+            self.keyboard_manager.prompt(random.choice(settings.FALLBACK_PROMPTS))
             return
         try:
             action = self.bots_manager.run_action(intent)
@@ -45,5 +45,7 @@ class Manager(QObject):
         except Exception as e:
             #TODO: Bots manager failed to find the appropriate bot
             # Notify the user that input is ambiguous
-            self.keyboard_manager.prompt("Sorry, I don't understand.")
+            traceback.print_tb(e.__traceback__)
+            print(e)
+            self.keyboard_manager.prompt(random.choice(settings.FALLBACK_PROMPTS))
             # pass
