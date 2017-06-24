@@ -223,7 +223,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         for j in range(idx_shiftx, ceil(self.interval/2) + idx_shiftx):
           x = self.labels[i + self.row][j + self.col]
           x.show()
-          if len(x.text()) > 1:
+          # start the font animation of suggested words from small size
+          # the interval check prevents it from working on the following animation
+          if len(x.text()) > 1 and self.interval == 2:
             x.font_size = 1
           if self.interval == self.max_interval:
             # TODO: Use proper font size
