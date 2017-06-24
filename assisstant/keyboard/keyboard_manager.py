@@ -20,6 +20,7 @@ class KeyboardManager(QObject):
     self.autocomplete_manager = AutoCompleteManager()
     self.is_virtual = is_virtual
 
+    self.keyboard_window.ui_reloaded_signal.connect(self.after_reload)
     # self.keyboard_window.ui_pause.connect(self.pause_handler)
     # self.keyboard_window.ui_freeze.connect(self.freeze_handler)
     # self.keyboard_window.autocomplete_signal.connect(self.predict_word)
@@ -74,8 +75,10 @@ class KeyboardManager(QObject):
     query = self.keyboard_window.get_input() + char
     self.predict_word(query)
 
-    if char == "⏎":
+  def after_reload(self, selected):
+    if selected == "⏎":
       self.send_query_signal.emit(self.keyboard_window.get_input())
+
 
   def predict_word(self, query):
     print(query)

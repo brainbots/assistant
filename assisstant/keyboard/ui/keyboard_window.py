@@ -13,6 +13,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   # ui_freeze = pyqtSignal(bool)
   send_query_signal = pyqtSignal(str)
   autocomplete_signal = pyqtSignal(str)
+  ui_reloaded_signal = pyqtSignal(str)
 
   def __init__(self):
     super(KeyboardWindow, self).__init__()
@@ -166,6 +167,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.row, self.col, self.interval = 0, 0, self.max_interval
     self.loadCharacters()
     self.animate(False)
+    self.ui_reloaded_signal.emit(selected)
     # QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def update(self, result):
