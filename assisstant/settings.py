@@ -72,3 +72,5 @@ REGISTERED_BOTS = [
 	'bots.bots.mail.MailBot',
 	# 'bots.bots.search.SearchBot',
 ]
+
+SENDGRID_ACCESS_TOKEN = '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'
