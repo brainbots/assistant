@@ -21,9 +21,6 @@ class KeyboardManager(QObject):
     self.is_virtual = is_virtual
 
     self.keyboard_window.ui_reloaded_signal.connect(self.after_reload)
-    # self.keyboard_window.ui_pause.connect(self.pause_handler)
-    # self.keyboard_window.ui_freeze.connect(self.freeze_handler)
-    # self.keyboard_window.autocomplete_signal.connect(self.predict_word)
 
     # the loop goes like this
     # device starts collecting -> call update to start flashing
@@ -34,13 +31,10 @@ class KeyboardManager(QObject):
 
     self.device.collect_signal.connect(self.device_update)
 
-    # self.freeze = False
     self.paused = False
     self.old_data = getUserDatasets()
-
     # predetermined sequence of choices for testing
     self.seq = [1,1,1,1,3,3,3,3,3,3]
-
     # initial delay
     self.begin_rest()
 
@@ -70,7 +64,6 @@ class KeyboardManager(QObject):
       if char and not predicted:
         self.char_selected(char)
 
-      # Problem is this gets called after char is selected and device is started before intent response and so a new selection occurs without flashing
       elif not char:
         self.begin_rest()
 
@@ -99,7 +92,6 @@ class KeyboardManager(QObject):
       print(e)
       self.keyboard_window.receive_predicted_words([])
 
-  #TODO: move to keyboard/manager
   #TODO: add proper action_handler
   def bot_action_handler(self, action):
     if action:

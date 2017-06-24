@@ -9,10 +9,6 @@ from .keyboard_ui import Ui_KeyboardWindow
 from .components import CustomLabel
 
 class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
-  # ui_pause = pyqtSignal(bool)
-  # ui_freeze = pyqtSignal(bool)
-  send_query_signal = pyqtSignal(str)
-  autocomplete_signal = pyqtSignal(str)
   ui_reloaded_signal = pyqtSignal(str)
 
   def __init__(self):
@@ -158,17 +154,14 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         current_words[-1] = selected
         s = " ".join(current_words) + " "
         self.update_input(s)
-        # self.lblCmd.insertPlainText(" ".join(current_words) + " ")
       else:
         s = self.lblCmd.toPlainText() + selected
         self.update_input(s)
-        # self.lblCmd.insertPlainText(self.lblCmd.toPlainText() + selected)
       self.history.append(s)
     self.row, self.col, self.interval = 0, 0, self.max_interval
     self.loadCharacters()
     self.animate(False)
     self.ui_reloaded_signal.emit(selected)
-    # QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def update(self, result):
     if self.embedded_mode:
@@ -191,7 +184,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.target = result
       if self.autocomplete:
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
-      # else:
       return self.labels[self.row][self.col].text(), self.autocomplete
     else:
       return False, False
@@ -294,11 +286,8 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       for box in self.boxes:
         box.stopFlashing()
 
-  # def unfreeze(self):
-    # self.ui_freeze.emit(False)
 
   def receive_predicted_words(self, words):
-    # self.unfreeze()
     self.autocomplete = True
     if len(words) < 3:
       QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
