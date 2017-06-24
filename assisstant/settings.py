@@ -41,7 +41,7 @@ VIRTUAL_QUERIES =  [
     'weather in london,gb?'
 ]
 
-VIRTUAL_SEQUENCE = [1,1,1,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+VIRTUAL_SEQUENCE = [1,1,1,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 
 # === Autocomplete Settings ===
 
@@ -51,6 +51,8 @@ AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete
 # === NLP Settings ===
 
 NLP_BACKEND = "nlp.backends.api_ai.ApiaiBackend"
+
+APIAI_ACCESS_TOKEN='8dda3e91a2b240e1b16d48aa57433ece'
 
 # === Bots Settings ===
 
