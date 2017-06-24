@@ -42,8 +42,10 @@ class KeyboardManager(QObject):
     self.seq = [1,1,1,1,3,3,3,3,3,3]
 
     # initial delay
-    QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
+    self.begin_rest()
 
+  def begin_rest(self):
+    QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
   # The passed boolean can be omitted as the function toggles the flashing each time
   def device_update(self, collecting, data=None):
     print("device update ", collecting)
@@ -62,22 +64,27 @@ class KeyboardManager(QObject):
       else:
         result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
 
-      char = self.keyboard_window.update(result)
+      char, predicted = self.keyboard_window.update(result)
+      print("Selected Character: ", char)
 
-      if char:
+      if char and not predicted:
         self.char_selected(char)
 
       # Problem is this gets called after char is selected and device is started before intent response and so a new selection occurs without flashing
-      QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
+      elif not char:
+        self.begin_rest()
 
   def char_selected(self, char):
-    print("Selected Character: ", char)
     query = self.keyboard_window.get_input() + char
     self.predict_word(query)
 
   def after_reload(self, selected):
     if selected == "⏎":
+      self.reset_prompt()
       self.send_query_signal.emit(self.keyboard_window.get_input())
+    else:
+      # Start after rest if no action to be taken
+      self.begin_rest()
 
 
   def predict_word(self, query):
@@ -89,6 +96,7 @@ class KeyboardManager(QObject):
     except Exception as e:
       # print(e)
       traceback.print_tb(e.__traceback__)
+      print(e)
       self.keyboard_window.receive_predicted_words([])
 
   #TODO: move to keyboard/manager
@@ -98,10 +106,21 @@ class KeyboardManager(QObject):
       print(action.type)
       print(action.body)
       
-      self.keyboard_window.update_text("")
+      self.keyboard_window.update_input("")
 
-    if action and action.type != 'embed':
-      self.keyboard_window.update_prompt(str(action.body))
-      # QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
-    elif action and action.type == 'embed':
-      self.keyboard_window.embedWindow(action.body['hwnd'], action.body['commands'])
+      if action.type != 'embed':
+        self.keyboard_window.update_prompt(str(action.body))
+        self.begin_rest()
+        # QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
+      elif action.type == 'embed':
+        self.keyboard_window.embedWindow(action.body['hwnd'], action.body['commands'])
+    else:
+      self.begin_rest()
+
+  def prompt(self, p):
+    self.keyboard_window.update_prompt(p)
+    self.keyboard_window.update_input("")
+    self.begin_rest()
+
+  def reset_prompt(self):
+    self.keyboard_window.update_prompt("")

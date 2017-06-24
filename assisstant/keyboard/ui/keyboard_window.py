@@ -191,8 +191,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.target = result
       if self.autocomplete:
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
-      else:
-        return self.labels[self.row][self.col].text()
+      # else:
+      return self.labels[self.row][self.col].text(), self.autocomplete
+    else:
+      return False, False
 
 
   def hideChars(self):
@@ -324,6 +326,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
 
       self.interval = 2
       self.animate(False)
+      self.ui_reloaded_signal.emit("")
       # QTimer.singleShot(config.TIME_REST_SEC * 1000, Qt.PreciseTimer, lambda: self.ui_pause.emit(False))
 
   def get_input(self):
