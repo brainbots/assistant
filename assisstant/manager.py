@@ -29,9 +29,10 @@ class Manager(QObject):
         except Exception as e:
             # TODO: Retry the request again
             # If request fails, notify the user
-            print(e)
             traceback.print_tb(e.__traceback__)
-            self.keyboard_manager.action_handler(None)
+            print(e)
+            # self.keyboard_manager.bot_action_handler(None)
+            self.keyboard_manager.prompt("Sorry, I don't understand.")
             return
         try:
             action = self.bots_manager.run_action(intent)
@@ -40,8 +41,9 @@ class Manager(QObject):
             else:
                 self.nlp_manager.reset_contexts()
         #Call or emit a signal to the keyboard
-            self.keyboard_manager.action_handler(action)
+            self.keyboard_manager.bot_action_handler(action)
         except Exception as e:
             #TODO: Bots manager failed to find the appropriate bot
             # Notify the user that input is ambiguous
-            pass
+            self.keyboard_manager.prompt("Sorry, I don't understand.")
+            # pass
