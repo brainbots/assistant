@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from keyboard import config
+import settings
 
 def read(folder, duration):
     '''
@@ -47,7 +47,7 @@ def read(folder, duration):
     return (samples, target)
 
 def getUserDatasets():
-    directory = os.path.join("keyboard", "datasets", "users", config.USER)
+    directory = os.path.join("keyboard", "datasets", "users", settings.USER)
     datasets = []
 
     for dirname, dirnames, _ in os.walk(directory):
