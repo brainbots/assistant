@@ -305,7 +305,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       for i in range(2):
         for j in range(2):
           if 2*i + j != self.target:
-            self.labels[self.row + i][self.col + j].setText(words[idx][0])
+            self.labels[self.row + i][self.col + j].setText(words[idx])
             idx += 1
 
       self.interval = 2

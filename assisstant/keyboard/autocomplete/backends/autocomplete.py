@@ -13,5 +13,6 @@ class AutoComplete:
 		else:
 			# TODO find another solution
 			prev = "the"
-		return autocomplete.predict(prev, word)[:3]
+		top = autocomplete.predict(prev, word)[:3]
+		return [word for word, score in top]
 
