@@ -1,11 +1,14 @@
 from markov_autocomplete.autocomplete import Autocomplete
+import os
 from keyboard.ui import config
 
 class MarkovAutocomplete:
     def __init__(self):
         sentences = []
+        training_directory = 'training_files'
         for file_name in config.AUTOCOMPLETE_TRAINING_FILE_NAMES:
-            training_file = open(file_name,'r')
+            file_path = os.path.join(training_directory,file_name)
+            training_file = open(file_path,'r')
             sentences.append(training_file.read())
 
         self.ac = Autocomplete(model_path = "ngram",
