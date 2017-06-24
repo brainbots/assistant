@@ -39,3 +39,4 @@ CHARS = ["abcdqrst",
          "*/^=<>]⏎"]
 
 AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete"
+AUTOCOMPLETE_TRAINING_FILE_NAMES = ["alice.txt","tale_of_two_cities.txt"]
