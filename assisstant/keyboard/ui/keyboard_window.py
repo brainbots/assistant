@@ -17,19 +17,12 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.commands = []
     self.max_interval = len(self.chars[0])
     self.embedded_mode = False
-    self.initial_font = 17
+    self.initial_font = config.INITIAL_FONT
     self.setupUi(self)
     self.target = None
     self.autocomplete = False
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
     # for testing
-    self.queries = [
-        'Search google for emotiv',
-        'What is the weather?',
-        'in cairo',
-        'in egypt',
-        'weather in london,gb?'
-    ]
 
     self.history = []
 

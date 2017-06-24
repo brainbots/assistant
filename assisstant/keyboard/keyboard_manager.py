@@ -34,7 +34,8 @@ class KeyboardManager(QObject):
     self.paused = False
     self.old_data = getUserDatasets()
     # predetermined sequence of choices for testing
-    self.seq = [1,1,1,1,3,3,3,3,3,3]
+    self.virtual_sequence = settings.VIRTUAL_SEQUENCE
+    self.virtual_queries = settings.VIRTUAL_QUERIES
     # initial delay
     self.begin_rest()
 
@@ -51,8 +52,8 @@ class KeyboardManager(QObject):
     if not collecting:
       sample, _quality = data
       if self.is_virtual:
-        if len(self.seq) > 0:
-          result = self.seq.pop(0)
+        if len(self.virtual_sequence) > 0:
+          result = self.virtual_sequence.pop(0)
         else:
           result = randint(0, 3)
       else:
@@ -73,8 +74,16 @@ class KeyboardManager(QObject):
 
   def after_reload(self, selected):
     if selected == "⏎":
+      if self.is_virtual:
+        if len(self.virtual_queries) > 1:
+          query = self.virtual_queries.pop(0)
+        else:
+          query = self.virtual_queries[0]
+      else:
+        query = self.keyboard_window.get_input()
+        
       self.reset_prompt()
-      self.send_query_signal.emit(self.keyboard_window.get_input())
+      self.send_query_signal.emit(query)
     else:
       # Start after rest if no action to be taken
       self.begin_rest()

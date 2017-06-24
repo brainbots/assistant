@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 USER = "AmrMohamed"
 
 # === Keyboard Settings ===
+INITIAL_FONT = 17
 
 FREQ = [
 	6.666666666666667,
@@ -17,8 +18,8 @@ FREQ = [
 
 COLOR   =   [Qt.green, Qt.green, Qt.green, Qt.green, Qt.black]
 
-TIME_FLASH_SEC     = 1
-TIME_REST_SEC      = 1
+TIME_FLASH_SEC     = 3
+TIME_REST_SEC      = 4
 ANIMATION_DURATION = 300
 GRIDLAYOUT_MARGIN  = 0
 GRIDLAYOUT_SPACING = 100
@@ -31,6 +32,16 @@ CHARS = ["abcdqrst",
          "5678~_{}",
          "90-+()[␣",
          "*/^=<>]⏎"]
+
+VIRTUAL_QUERIES =  [
+    'Search google for emotiv',
+    'What is the weather?',
+    'in cairo',
+    'in egypt',
+    'weather in london,gb?'
+]
+
+VIRTUAL_SEQUENCE = [1,1,1,1,3,3,3,3,3,3]
 
 # === Autocomplete Settings ===
 
