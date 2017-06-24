@@ -48,6 +48,10 @@ VIRTUAL_SEQUENCE = [1,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete"
 
 
+# === NLP Settings ===
+
+NLP_BACKEND = "nlp.backends.api_ai.ApiaiBackend"
+
 # === Bots Settings ===
 
 # Default msg when no bot or intent found.
