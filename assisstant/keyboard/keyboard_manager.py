@@ -70,12 +70,12 @@ class KeyboardManager(QObject):
       QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
 
   def char_selected(self, char):
-        print("Selected Character: ", char)
-        query = self.keyboard_window.get_input() + char
-        self.predict_word(query)
+    print("Selected Character: ", char)
+    query = self.keyboard_window.get_input() + char
+    self.predict_word(query)
 
-        if char == "⏎":
-          self.send_query_signal.emit(self.keyboard_window.get_input())
+    if char == "⏎":
+      self.send_query_signal.emit(self.keyboard_window.get_input())
 
   def predict_word(self, query):
     print(query)
