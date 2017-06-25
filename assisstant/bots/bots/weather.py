@@ -49,7 +49,7 @@ class WeatherBot(AbstractBot):
 		        keep_context = True)
 
 	def has_missing_attr(self):
-	    return (self.country and self.city)
+	    return (self.country == None or self.city == None)
 
 	def execute(self):
 	    # self.datetime = address.get('datetime')
@@ -68,7 +68,7 @@ class WeatherBot(AbstractBot):
 	    	if jso['success']:
 	    	    # pprint(jso['response'])
 	    	    ob = jso['response']['ob']
-	    	    weather_forecast = 'The current weather in {} is {} with a temperature of {}.'.format(
+	    	    weather_forecast = 'The current weather in {} is {} with a temperature of {}°C.'.format(
 	    	        self.city, ob['weather'].lower(), ob['tempC'])
 	    	else:
 	    	    print ("An error occurred: %s" % (jso['error']['description']))

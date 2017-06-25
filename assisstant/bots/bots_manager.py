@@ -48,7 +48,7 @@ class BotManager:
         if bot.has_missing_attr():
             try:
                 self.partially_active_bot_id = bot.id
-                return bot.request_missing_attr(intent)
+                return bot.request_missing_attr()
             except Exception as e:
                 raise(e)
         else:
