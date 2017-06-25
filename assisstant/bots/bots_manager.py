@@ -65,3 +65,12 @@ class BotManager:
             for bot in self.bots:
                 if self.current_active_bot_id == bot.id:
                     return bot.run_command(command_index)
+
+
+    def terminate_bot(self):
+        if self.current_active_bot_id:
+            for bot in self.bots:
+                if self.current_active_bot_id == bot.id:
+                    bot.terminate()
+                    self.current_active_bot_id = None
+                    return

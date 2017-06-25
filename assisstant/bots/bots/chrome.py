@@ -60,3 +60,8 @@ class ChromeBot(AbstractBot):
     #fn = lambda: [self.keyboard.tap_key(self.keyboard.escape_key), self.keyboard.tap_key(arg)]
     fn = lambda: self.keyboard.tap_key(arg)
     return Action(action_type = 'keyboard_event', body = {'fn': fn}, bot = self.id, keep_context = False)
+
+  def terminate(self):
+    self.keyboard = None
+    self.process.terminate()
+    self.process = None

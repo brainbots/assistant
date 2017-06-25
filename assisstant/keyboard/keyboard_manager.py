@@ -63,9 +63,7 @@ class KeyboardManager(QObject):
 
       if self.keyboard_window.embedded_mode:
         if result == 0:
-          #TODO: exit bot
-          pass
-        else:
+          self.keyboard_window.unembedWindow()
           self.direct_bot_command.emit(result-1)
         return
 

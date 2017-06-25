@@ -19,8 +19,12 @@ class Assistant(QObject):
         self.keyboard_manager.send_query_signal.connect(self.analyze_query)
 
     def handle_direct_bot_commands(self, command_index):
-        action = self.bots_manager.resume_bot(command_index)
-        self.keyboard_manager.bot_action_handler(action)
+        if command_index == -1:
+            self.bots_manager.terminate_bot()
+            self.keyboard_manager.begin_rest()
+        else:
+            action = self.bots_manager.resume_bot(command_index)
+            self.keyboard_manager.bot_action_handler(action)
 
     def analyze_query(self, query):
         print(query)
