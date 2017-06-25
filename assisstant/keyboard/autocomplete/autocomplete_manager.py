@@ -1,5 +1,5 @@
 import importlib
-import keyboard.config as settings
+import settings
 
 class AutoCompleteManager:
 	def __init__(self):
