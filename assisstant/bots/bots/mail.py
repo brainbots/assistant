@@ -40,6 +40,9 @@ class MailBot(AbstractBot):
         # print(response.body)
         # print(response.headers)
 
+    def is_long_running(self):
+        return False
+
     def has_missing_attr(self):
         return (self.mail_from == None or self.mail_to == None or self.subject == None or self.body == None)
 

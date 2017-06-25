@@ -1,6 +1,5 @@
 from math import ceil
 from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, pyqtSignal
-
 from PyQt5.QtGui import QFont, QWindow, QTextCursor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QVBoxLayout, QLayout
 
@@ -64,12 +63,21 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         label.show()
         self.labels[i].append(label)
 
+  def execKeyboardEvent(self, fn):
+    self.wnd.requestActivate()
+    self.wdg.setFocus()
+    self.wnd_container.setFocus()
+    #self.wnd.setKeyboardGrabEnabled(True)
+    #self.wnd_container.grabKeyboard()
+    fn()
+    #self.wnd_container.releaseKeyboard()
+    #self.wnd.setKeyboardGrabEnabled(False)
+
   def embedWindow(self, hwnd, labels):
-    self.ui_freeze.emit(True)
-    self.ui_pause.emit(True)
     wnd = QWindow.fromWinId(hwnd)
     self.wnd_container = self.createWindowContainer(wnd, self.wdg, Qt.FramelessWindowHint)
     self.wdg.layout().addWidget(self.wnd_container)
+    self.wnd = wnd
 
     self.hideChars()
     
@@ -81,15 +89,12 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.embedded_mode = True
     self.resizeEmbbedWindow()
     self.update()
-    self.unfreeze()
-    self.ui_pause.emit(False)
     self.wdg.setParent(self)
     self.wdg.show()
 
   def unembedWindow(self):
     # The embedded window is remove but the external process is still running.
     # The external process termination should be handled by it's owner (probably a bot)
-    self.ui_pause.emit(True)
     self.wdg.hide()
     for i in range(len(self.commands)):
       self.commands[i].setText("")
@@ -97,7 +102,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.commands[i].hide()
 
     self.embedded_mode = False
-    self.ui_pause.emit(False)
     #TODO: this causes layout freeze
     #self.resetCharacters()
     self.wdg.layout().removeWidget(self.wnd_container)
@@ -170,9 +174,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.animate(False)
     self.ui_reloaded_signal.emit(selected)
 
-  def update(self, result):
+  def update_handler(self, result):
     if self.embedded_mode:
-        return
+        return None
     self.interval //= 2
     if result == 0:
       pass

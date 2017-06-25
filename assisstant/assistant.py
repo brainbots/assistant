@@ -6,16 +6,21 @@ import bots.bots_manager as Bots
 import random
 import traceback
 
-class Manager(QObject):
+class Assistant(QObject):
 
     def __init__(self, is_virtual, parent=None):
-        super(Manager, self).__init__(parent)
+        super(Assistant, self).__init__(parent)
 
         self.keyboard_manager = Keyboard.KeyboardManager(is_virtual)
         self.nlp_manager = NLP.NlpManager()
         self.bots_manager = Bots.BotManager()
 
+        self.keyboard_manager.direct_bot_command.connect(self.handle_direct_bot_commands)
         self.keyboard_manager.send_query_signal.connect(self.analyze_query)
+
+    def handle_direct_bot_commands(self, command_index):
+        action = self.bots_manager.resume_bot(command_index)
+        self.keyboard_manager.bot_action_handler(action)
 
     def analyze_query(self, query):
         print(query)

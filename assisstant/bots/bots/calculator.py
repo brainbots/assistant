@@ -31,3 +31,6 @@ class CalculatorBot(AbstractBot):
 
 	def has_missing_attr(self):
 	    return
+
+	def is_long_running(self):
+	    return False
