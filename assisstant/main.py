@@ -6,7 +6,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt, QTimer
 
-from manager import Manager
+from assistant import Assistant
 
 if __name__ == '__main__':
   try:
@@ -28,5 +28,5 @@ if __name__ == '__main__':
   app = QApplication([])
   app.setOverrideCursor(Qt.BlankCursor)
 
-  main_manager = Manager(is_virtual)
+  main_manager = Assistant(is_virtual)
   sys.exit(app.exec())

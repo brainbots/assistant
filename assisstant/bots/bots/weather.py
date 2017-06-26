@@ -48,6 +48,9 @@ class WeatherBot(AbstractBot):
 		        bot = self.id,
 		        keep_context = True)
 
+	def is_long_running(self):
+	    return False
+
 	def has_missing_attr(self):
 	    return (self.country == None or self.city == None)
 

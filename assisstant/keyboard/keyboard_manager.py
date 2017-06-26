@@ -10,6 +10,7 @@ import traceback
 
 class KeyboardManager(QObject):
   send_query_signal = pyqtSignal(str)
+  direct_bot_command = pyqtSignal(int)
 
   def __init__(self, is_virtual, parent=None):
     super(KeyboardManager, self).__init__(parent)
@@ -61,7 +62,13 @@ class KeyboardManager(QObject):
       else:
         result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
 
-      char, predicted = self.keyboard_window.update(result)
+      if self.keyboard_window.embedded_mode:
+        if result == 0:
+          self.keyboard_window.unembedWindow()
+          self.direct_bot_command.emit(result-1)
+        return
+
+      char, predicted = self.keyboard_window.update_handler(result)
       print("Selected Character: ", char)
 
       if char and not predicted:
@@ -83,7 +90,7 @@ class KeyboardManager(QObject):
           query = self.virtual_queries[0]
       else:
         query = self.keyboard_window.get_input()
-        
+      
       self.reset_prompt()
       self.send_query_signal.emit(query)
     else:
@@ -111,14 +118,15 @@ class KeyboardManager(QObject):
       
       self.keyboard_window.update_input("")
 
-      if action.type != 'embed':
+      if action.type == 'embed':
+        self.keyboard_window.embedWindow(action.body['hwnd'], ['x'] + action.body['commands'])
+      elif action.type == 'keyboard_event':
+        self.keyboard_window.execKeyboardEvent(action.body['fn'])
+      else:
         self.keyboard_window.update_prompt(str(action.body))
-        self.begin_rest()
-        # QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
-      elif action.type == 'embed':
-        self.keyboard_window.embedWindow(action.body['hwnd'], action.body['commands'])
-    else:
-      self.begin_rest()
+
+    self.begin_rest()
+    # QTimer.singleShot(5000, Qt.PreciseTimer, self.unfreeze)
 
   def prompt(self, p):
     self.keyboard_window.update_prompt(p)

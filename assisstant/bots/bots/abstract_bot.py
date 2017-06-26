@@ -19,3 +19,7 @@ class AbstractBot(ABC):
 	@abstractmethod
 	def request_missing_attr(self):
 		pass
+
+	@abstractmethod
+	def is_long_running(self):
+		pass
