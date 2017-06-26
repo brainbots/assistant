@@ -122,7 +122,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def resizeEvent(self, event):
     self.animate(True)
     self.resizeEmbbedWindow() 
-    self.timer_init()
+    self.resize_timer()
 
   def loadCharacters(self):
     for i in range(self.interval):
@@ -188,9 +188,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.labels[i][j].hide()
 
   # reposition timer
-  def timer_init(self):
-    parent_w, parent_h = self.centralWidget.width(), self.centralWidget.height()
-    parent_x, parent_y = self.centralWidget.x(), self.centralWidget.y()
+  def resize_timer(self):
+    parent_w, parent_h = self.gridLayout.geometry().width(), self.gridLayout.geometry().height()
+    parent_x, parent_y = self.gridLayout.geometry().x(), self.gridLayout.geometry().y()
     size = self.timer_lbl.sizeHint()
     wdg_w, wdg_h = size.width(), size.height()
     wdg_x, wdg_y = parent_x + (parent_w // 2) - (wdg_w // 2), parent_y + (parent_h // 2) - (wdg_h)
@@ -198,15 +198,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.timer_lbl.resize(wdg_w, wdg_h)
     self.timer_lbl.move(wdg_x, wdg_y)
 
-  def show_timer(self, paused):
-    print("Show Timer: ", paused)
-    if paused:
-      self.timer_lbl.show()
-      n = self.startTimer(1000, Qt.PreciseTimer)
-      self.countdown = config.TIME_REST_SEC
-      self.timer_lbl.setText(str(self.countdown))
-    else:
-      self.timer_lbl.hide()
+  def show_timer(self):
+    self.timer_lbl.show()
+    n = self.startTimer(1000, Qt.PreciseTimer)
+    self.countdown = config.TIME_REST_SEC
+    self.timer_lbl.setText(str(self.countdown))
 
   def timerEvent(self, event):
     self.countdown -= 1
