@@ -193,7 +193,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     parent_x, parent_y = self.gridLayout.geometry().x(), self.gridLayout.geometry().y()
     size = self.timer_lbl.sizeHint()
     wdg_w, wdg_h = size.width(), size.height()
-    wdg_x, wdg_y = parent_x + (parent_w // 2) - (wdg_w // 2), parent_y + (parent_h // 2) - (wdg_h)
+    wdg_x, wdg_y = parent_x + (parent_w // 2) - (wdg_w // 2), parent_y + (parent_h // 2) - (wdg_h // 2)
 
     self.timer_lbl.resize(wdg_w, wdg_h)
     self.timer_lbl.move(wdg_x, wdg_y)
