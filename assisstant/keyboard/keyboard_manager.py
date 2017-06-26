@@ -6,6 +6,7 @@ import settings
 from keyboard.classification import cca, itcca
 from keyboard.datasets.reader import getUserDatasets
 from random import randint
+import importlib
 import traceback
 
 class KeyboardManager(QObject):
@@ -32,12 +33,26 @@ class KeyboardManager(QObject):
     self.device.collect_signal.connect(self.device_update)
 
     self.paused = False
-    self.old_data = getUserDatasets()
+    self.classifier = self.load_classifier()
+    # self.old_data = getUserDatasets()
+
     # predetermined sequence of choices for testing
     self.virtual_sequence = settings.VIRTUAL_SEQUENCE
     self.virtual_queries = settings.VIRTUAL_QUERIES
     # initial delay
     self.begin_rest()
+
+  def load_classifier(self):
+    ca = settings.CLASSIFICATION_ALGORITHM
+    *module, classname = ca.split(".")
+    module = ".".join(module)
+    module = importlib.import_module(module)
+    classifier_class = getattr(module, classname)
+    if settings.TRAIN_CLASSIFIER:
+      training_data = getUserDatasets()
+    else:
+      training_data = None
+    return classifier_class(freqs=settings.FREQ, duration=settings.TIME_FLASH_SEC, data=training_data)
 
   def begin_rest(self):
     QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
@@ -59,7 +74,8 @@ class KeyboardManager(QObject):
         else:
           result = randint(0, 3)
       else:
-        result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
+        result = self.classifier.classify(sample)
+        # result = cca.classify(sample, settings.FREQ, settings.TIME_FLASH_SEC, self.old_data)
 
       char, predicted = self.keyboard_window.update(result)
       print("Selected Character: ", char)

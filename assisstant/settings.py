@@ -41,12 +41,19 @@ VIRTUAL_QUERIES =  [
     'weather in london,gb?'
 ]
 
-VIRTUAL_SEQUENCE = [1,1,1,0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+VIRTUAL_SEQUENCE = [0,0,0,0,0,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 
 # === Autocomplete Settings ===
 
 AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete"
 
+
+# === Classification Settings ===
+
+CLASSIFICATION_ALGORITHM = "keyboard.classification.cca.CCAClassifier"
+
+TRAIN_CLASSIFIER = False
+#TODO define setting for path of training data
 
 # === NLP Settings ===
 
