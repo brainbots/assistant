@@ -22,7 +22,6 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.target = None
     self.autocomplete = False
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
-    # for testing
 
     self.history = []
 
@@ -123,6 +122,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
   def resizeEvent(self, event):
     self.animate(True)
     self.resizeEmbbedWindow() 
+    self.resize_timer()
 
   def loadCharacters(self):
     for i in range(self.interval):
@@ -186,6 +186,30 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     for i in range(self.max_interval):
       for j in range(self.max_interval):
         self.labels[i][j].hide()
+
+  # reposition timer
+  def resize_timer(self):
+    parent_w, parent_h = self.gridLayout.geometry().width(), self.gridLayout.geometry().height()
+    parent_x, parent_y = self.gridLayout.geometry().x(), self.gridLayout.geometry().y()
+    size = self.timer_lbl.sizeHint()
+    wdg_w, wdg_h = size.width(), size.height()
+    wdg_x, wdg_y = parent_x + (parent_w // 2) - (wdg_w // 2), parent_y + (parent_h // 2) - (wdg_h)
+
+    self.timer_lbl.resize(wdg_w, wdg_h)
+    self.timer_lbl.move(wdg_x, wdg_y)
+
+  def show_timer(self):
+    self.timer_lbl.show()
+    n = self.startTimer(1000, Qt.PreciseTimer)
+    self.countdown = config.TIME_REST_SEC
+    self.timer_lbl.setText(str(self.countdown))
+
+  def timerEvent(self, event):
+    self.countdown -= 1
+    self.timer_lbl.setText(str(self.countdown))
+    if self.countdown == 0:
+      self.timer_lbl.hide()
+      self.killTimer(event.timerId())
 
 
   def animate(self, flag = True):
