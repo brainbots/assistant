@@ -66,7 +66,7 @@ class KeyboardManager(QObject):
       if self.keyboard_window.embedded_mode:
         if result == 0:
           self.keyboard_window.unembedWindow()
-          self.direct_bot_command.emit(result-1)
+        self.direct_bot_command.emit(result-1)
         return
 
       char, predicted = self.keyboard_window.update_handler(result)
