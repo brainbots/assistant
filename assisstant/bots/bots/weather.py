@@ -3,6 +3,7 @@ from bots.action import Action
 from urllib.request import urlopen
 from pprint import pprint
 import json
+import settings
 
 class WeatherBot(AbstractBot):
 	def __init__(self, id):
@@ -37,14 +38,14 @@ class WeatherBot(AbstractBot):
 	    if not self.city:
 	        return Action(
 		        action_type = 'inquiry',
-		        body = 'Please specify the city',
+		        body = 'Please specify the city.\n',
 		        bot = self.id,
 		        keep_context = True)
 
 	    if not self.country:
 	        return Action(
 		        action_type = 'inquiry',
-		        body = 'Please specify the country',
+		        body = 'Please specify the country.\n',
 		        bot = self.id,
 		        keep_context = True)
 
@@ -58,9 +59,8 @@ class WeatherBot(AbstractBot):
 	    # self.datetime = address.get('datetime')
 	    # self.unit = address.get('unit')
 	    try:
-	    	#TODO: Use a Weather API , Don't forget to clear the params
-	    	CLIENT_ID = 'UdLRojHnKB0m0b6ysMvKj'
-	    	CLIENT_SECRET = '3Kdd7KK6vCcLFhIA9RigNdiCGoB6JdkIjweHi4zy'
+	    	CLIENT_ID = settings.WEATHER_CLIENT_ID
+	    	CLIENT_SECRET = settings.WEATHER_CLIENT_SECRET
 	    	request = urlopen('https://api.aerisapi.com/observations/{},{}?client_id={} & client_secret={}'
 	    	    .format(self.city,self.country,CLIENT_ID,CLIENT_SECRET))
 
@@ -69,13 +69,20 @@ class WeatherBot(AbstractBot):
 	    	jso = json.loads(response)
 	    	weather_forecast = ''
 	    	if jso['success']:
-	    	    # pprint(jso['response'])
 	    	    ob = jso['response']['ob']
-	    	    weather_forecast = 'The current weather in {} is {} with a temperature of {}°C.'.format(
-	    	        self.city, ob['weather'].lower(), ob['tempC'])
+	    	    weather_forecast = 'The current weather in {}, {} is {} with a temperature of {}°C.'.format(
+	    	        self.city, self.country, ob['weather'].lower(), ob['tempC'])
 	    	else:
 	    	    print ("An error occurred: %s" % (jso['error']['description']))
-	    	    request.close()
+	    	    self.clear()
+	    	    return Action(
+	    	        action_type = 'inquiry',
+	    	        body = '- Invalid city-country pair.\n'
+	    	            '- Please specify the city.',
+	    	        bot = self.id,
+	    	        keep_context=True
+	    	        )
+	    	request.close()
 	    	self.clear()
 	    	return Action(
 		        action_type = 'message',
