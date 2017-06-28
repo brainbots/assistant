@@ -42,7 +42,8 @@ class KeyboardManager(QObject):
 
   def begin_rest(self):
     QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
-    self.keyboard_window.show_timer()
+    if not self.keyboard_window.embedded_mode:
+      self.keyboard_window.show_timer()
 
   # The passed boolean can be omitted as the function toggles the flashing each time
   def device_update(self, collecting, data=None):
