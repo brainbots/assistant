@@ -2,6 +2,7 @@ from math import ceil
 from PyQt5.QtCore import QRect, Qt, QTimer, pyqtProperty, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve, pyqtSignal
 from PyQt5.QtGui import QFont, QWindow, QTextCursor
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QVBoxLayout, QLayout
+from pymouse import PyMouse
 
 import settings as config
 from .keyboard_ui import Ui_KeyboardWindow
@@ -21,7 +22,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.target = None
     self.autocomplete = False
     self.boxes = [self.top_left, self.top_right, self.bottom_left, self.bottom_right]
-
+    self.mouse = PyMouse()
 
     self.geometries = [None, None, None, None]
     self.history = []
@@ -63,14 +64,9 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
         self.labels[i].append(label)
 
   def execKeyboardEvent(self, fn):
-    self.wnd.requestActivate()
-    self.wdg.setFocus()
-    self.wnd_container.setFocus()
-    #self.wnd.setKeyboardGrabEnabled(True)
-    #self.wnd_container.grabKeyboard()
+    x_dim, y_dim = self.mouse.screen_size()
+    self.mouse.move(x_dim // 2, y_dim // 2)
     fn()
-    #self.wnd_container.releaseKeyboard()
-    #self.wnd.setKeyboardGrabEnabled(False)
 
   def embedWindow(self, hwnd, labels):
     wnd = QWindow.fromWinId(hwnd)
