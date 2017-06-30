@@ -16,7 +16,7 @@ class KeyboardManager(QObject):
     super(KeyboardManager, self).__init__(parent)
 
     self.keyboard_window = KeyboardWindow()
-    self.keyboard_window.showMaximized()
+    self.keyboard_window.showFullScreen()
 
     self.autocomplete_manager = AutoCompleteManager()
     self.is_virtual = is_virtual
