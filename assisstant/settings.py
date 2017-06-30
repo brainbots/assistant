@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 USER = "AmrMohamed"
 
 # === Keyboard Settings ===
-INITIAL_FONT = 17
+INITIAL_FONT = 40
 
 FREQ = [
     6.666666666666667,
@@ -34,6 +34,10 @@ CHARS = ["abcdqrst",
          "*/^=<>]⏎"]
 
 VIRTUAL_QUERIES =  [
+    'send an email',
+    'to ahmed',
+    'the subject is greetings',
+    'the body is hello ahmed',
     # 'translate hello'
     # 'Search google for emotiv',
     # 'Translate give me the apple from english to french',
@@ -88,3 +92,6 @@ WEATHER_CLIENT_SECRET = '3Kdd7KK6vCcLFhIA9RigNdiCGoB6JdkIjweHi4zy'
 
 TRANSLATOR_LANG_TO = "Arabic"
 TRANSLATOR_LANG_FROM = "English"
+
+
+MAIL_DICT = {'ahmed': 'ahmedmostafa72@hotmail.com', 'thabet': 'thabetx@gmail.com'}

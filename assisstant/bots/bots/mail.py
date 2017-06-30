@@ -9,7 +9,8 @@ class MailBot(AbstractBot):
         actions = ['send']
         super().__init__(id, actions)
         # REQUIRED
-        self.mail_from = None
+        #self.mail_from = None
+        self.mail_from = "no-reply@brainbot.com"
         self.mail_to = None
         self.subject = None
         self.body = None
@@ -30,7 +31,7 @@ class MailBot(AbstractBot):
         to_email = Email(self.mail_to)
         subject = self.subject
         content = Content("text/plain",self.body)
-        mail = Mail(from_email, subject, to_email, content)
+        mail = Mail(from_email, subject, config.MAIL_DICT[to_email], content)
         response = sg.client.mail.send.post(request_body=mail.get())
         print(response.status_code)
         print(response.body)
@@ -58,7 +59,7 @@ class MailBot(AbstractBot):
         if self.mail_to == None:
             return Action(
                 action_type='inquiry',
-                body='Please specify the recipient email address',
+                body='Who do you want to send this mail to ?',
                 bot=self.id,
                 keep_context=True)
 
