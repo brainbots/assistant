@@ -61,7 +61,7 @@ class Ui_KeyboardWindow(object):
         self.lblCmd.setMinimumSize(QtCore.QSize(0, 100))
         self.lblCmd.setMaximumSize(QtCore.QSize(2000, 100))
         self.lblCmd.setObjectName("lblCmd")
-        self.lblCmd.setFont(QFont("Mono", 18))
+        self.lblCmd.setFont(QFont("Mono", 40))
         self.lblCmd.setFrameStyle(1)
         self.lblCmd.setReadOnly(True)
         self.horzLayout.addWidget(self.lblCmd)
@@ -84,7 +84,7 @@ class Ui_KeyboardWindow(object):
         self.undo.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.undo.setWordWrap(True)
         self.undo.setObjectName("undo")
-        self.undo.setFont(QFont("Mono", 18))
+        self.undo.setFont(QFont("Mono", 26))
         self.undo.setFrameStyle(1)
 
         self.timer_lbl = QtWidgets.QLabel(self.centralWidget)

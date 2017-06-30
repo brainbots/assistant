@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 USER = "AmrMohamed"
 
 # === Keyboard Settings ===
-INITIAL_FONT = 17
+INITIAL_FONT = 40
 
 FREQ = [
     6.666666666666667,
