@@ -19,11 +19,11 @@ class ChromeBot(AbstractBot):
     self.keyboard = None
 
   def extract_attr(self, intent):
-    self.query = intent.query_string
+    self.query = intent.parameters['q']
 
   def execute(self):
     try:
-      self.process.start("/usr/bin/google-chrome-stable {}".format("https://google.com/#q=how+are+you"))
+      self.process.start("/usr/bin/google-chrome-stable {}{}".format("https://google.com/#q=",self.query))
       pid = self.process.pid()
       criteria = {'pid': pid}
       wnd = None
