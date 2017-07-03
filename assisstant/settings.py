@@ -1,4 +1,5 @@
 from PyQt5.QtCore import Qt
+from secrets import *
 
 USER = "AmrMohamed"
 
@@ -60,8 +61,6 @@ AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete
 
 NLP_BACKEND = "nlp.backends.api_ai.ApiaiBackend"
 
-APIAI_ACCESS_TOKEN='8dda3e91a2b240e1b16d48aa57433ece'
-
 # === Bots Settings ===
 
 # Default msg when no bot or intent found.
@@ -81,10 +80,6 @@ REGISTERED_BOTS = [
     'bots.bots.translator.TranslationBot'
     # 'bots.bots.search.SearchBot',
 ]
-
-SENDGRID_ACCESS_TOKEN = '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'
-WEATHER_CLIENT_ID = 'UdLRojHnKB0m0b6ysMvKj'
-WEATHER_CLIENT_SECRET = '3Kdd7KK6vCcLFhIA9RigNdiCGoB6JdkIjweHi4zy'
 
 TRANSLATOR_LANG_TO = "Arabic"
 TRANSLATOR_LANG_FROM = "English"
