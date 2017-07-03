@@ -22,8 +22,8 @@ class TranslationBot(AbstractBot):
 
     def request_missing_attr(self):
         msgs = {
-            "lang-to": "Please specify the source language\n",
-            "lang-from": "Please specify the destination language\n",
+            "lang-to": "Please specify the destination language\n",
+            "lang-from": "Please specify the source language\n",
             "text": "Please specify text\n",
         }
         print(self.attr)
