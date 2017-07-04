@@ -1,6 +1,5 @@
 from PyQt5.QtCore import Qt
 from secrets import *
-import secrets
 
 USER = "AmrMohamed"
 
