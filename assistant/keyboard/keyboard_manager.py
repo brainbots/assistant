@@ -4,7 +4,7 @@ from keyboard.autocomplete.autocomplete_manager import AutoCompleteManager
 from keyboard.input import device
 import settings
 from keyboard.classification import cca, itcca
-from keyboard.datasets.reader import getUserDatasets
+from keyboard.dataset_manager.reader import getUserDatasets
 from random import randint
 import importlib
 import traceback
@@ -35,7 +35,7 @@ class KeyboardManager(QObject):
 
     self.paused = False
     self.classifier = self.load_classifier()
-    # self.old_data = getUserDatasets()
+    # self.old_data = getUserDatasets("S1",3)
 
     # predetermined sequence of choices for testing
     self.virtual_sequence = settings.VIRTUAL_SEQUENCE
