@@ -2,16 +2,15 @@ import numpy as np
 from keyboard.preprocessing import butter
 from keyboard.classification.abstract_classifier import AbstractClassifier
 from . import rcca
-
+from assisstant import settings
 class CCAClassifier(AbstractClassifier):
-
-    #Returns a list of matrices where each row in each matrix is a sin or cos with frequency = freqs[i] , the number of harmonics = Nharmonics and row length = sample_length 
+    #Returns a list of matrices where each row in each matrix is a sin or cos with frequency = freqs[i] , the number of harmonics = Nharmonics and row length = sample_length
     def classify(self, sample):
         freqs = np.array(self.freqs)
         n_harmonics = 3
-        ref = getArtificialRefSignal(freqs, n_harmonics, self.duration, 128)
+        ref = self.getArtificialRefSignal(freqs, n_harmonics, self.duration, 128)
         sample = butter.filter(sample)
-        return getBestFrequency(sample, ref)
+        return self.getBestFrequency(sample, ref)
 
     def getArtificialRefSignal(self, freqs,Nharmonics,n_secs,fs):
         t = np.linspace(0,n_secs,fs*n_secs)
@@ -25,7 +24,6 @@ class CCAClassifier(AbstractClassifier):
             mat_list[i] = Y
         return mat_list
 
-
     def getBestFrequency(self, eeg_data,ref_data):
         bestfreq = 0
         bestcanoncorr = -100000000
@@ -37,6 +35,9 @@ class CCAClassifier(AbstractClassifier):
                 bestfreq = i
         return bestfreq
 
+    def load_model(self):
+        pass
 
     def train(self, data):
         pass
+
