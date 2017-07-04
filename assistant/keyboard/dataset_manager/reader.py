@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import settings
 
 def read(absolute_path, duration):
     '''
@@ -46,8 +47,7 @@ def read(absolute_path, duration):
 
 
 def getUserDatasets(user,secs):
-    directory = os.path.join("dataset", user)
-    absolute_directory_path = os.path.abspath(directory)+os.sep
+    absolute_directory_path = os.path.join(settings.DATASET_PATH, user)+os.sep
     datasets = []
 
     for dirname in os.listdir(absolute_directory_path):
