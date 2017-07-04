@@ -1,5 +1,6 @@
 from PyQt5.QtCore import Qt
 from secrets import *
+import secrets
 
 USER = "AmrMohamed"
 
@@ -35,7 +36,7 @@ CHARS = ["abcdqrst",
          "*/^=<>]⏎"]
 
 VIRTUAL_QUERIES =  [
-    # 'translate hello'
+    'translate hello'
     # 'Search google for emotiv',
     # 'Translate give me the apple from english to french',
     # 'What is the weather?',
@@ -45,12 +46,13 @@ VIRTUAL_QUERIES =  [
 ]
 
 VIRTUAL_SEQUENCE = [
+    3,3,3,
     1,1,1,
     1,0,1,1,
     0,0,0,1,
     0,1,3,
     0,0,2,0,
-	3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
 
 # === Autocomplete Settings ===
 
