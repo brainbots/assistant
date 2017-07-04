@@ -1,5 +1,8 @@
 from PyQt5.QtCore import Qt
 from secrets import *
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 USER = "AmrMohamed"
 
@@ -59,6 +62,7 @@ AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete
 
 
 # === Classification Settings ===
+DATASET_PATH = os.path.join(BASE_DIR, 'keyboard/dataset_manager/Datasets')
 
 CLASSIFICATION_ALGORITHM = "keyboard.classification.cca.CCAClassifier"
 
