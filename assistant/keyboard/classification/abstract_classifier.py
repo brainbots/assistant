@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-from assisstant import settings
+import settings
 
 class AbstractClassifier(ABC):
   def __init__(self, freqs, duration, data=None , target = None):

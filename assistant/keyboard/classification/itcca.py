@@ -4,7 +4,7 @@ from keyboard.classification.abstract_classifier import AbstractClassifier
 from keyboard.dataset_manager.reader import getUserDatasets
 from . import rcca
 import os
-from assisstant import settings
+import settings
 
 def classify(self,sample):
     sample = butter.filter(sample)
