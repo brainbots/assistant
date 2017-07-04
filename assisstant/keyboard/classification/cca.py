@@ -2,7 +2,7 @@ import numpy as np
 from keyboard.preprocessing import butter
 from keyboard.classification.abstract_classifier import AbstractClassifier
 from . import rcca
-from assisstant import settings
+
 class CCAClassifier(AbstractClassifier):
     #Returns a list of matrices where each row in each matrix is a sin or cos with frequency = freqs[i] , the number of harmonics = Nharmonics and row length = sample_length
     def classify(self, sample):
@@ -38,6 +38,6 @@ class CCAClassifier(AbstractClassifier):
     def load_model(self):
         pass
 
-    def train(self, data):
+    def train(self, data , target):
         pass
 
