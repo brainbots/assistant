@@ -62,9 +62,7 @@ def getBestFrequency(self,eeg_data, ref_data):
             bestfreq = target_idx
     return bestfreq
 
-
-def train(self):
-    data , target = getUserDatasets(settings.USER,settings.TIME_FLASH_SEC)
+def train(self,data,target):
     directory = os.path.join('templates', settings.USER)
     for target_idx in range(4):
         indices = np.where(target == target_idx)
