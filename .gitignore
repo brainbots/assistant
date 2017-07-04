@@ -7,4 +7,4 @@ dataset
 .python-version
 Pipfile
 Pipfile.lock
-assisstant/secrets.py
+assistant/secrets.py
