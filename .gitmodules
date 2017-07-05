@@ -1,0 +1,3 @@
+[submodule "assistant/keyboard/dataset_manager/Datasets"]
+	path = assistant/keyboard/dataset_manager/Datasets
+	url = https://github.com/brainbots/Datasets.git
