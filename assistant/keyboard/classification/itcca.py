@@ -64,17 +64,22 @@ class ITCCAClassifier(AbstractClassifier):
         return bestfreq
 
     def train(self,data,target):
-        directory = os.path.join('templates', settings.USER)
         for target_idx in range(4):
             indices = np.where(target == target_idx)
             target_data = data[indices, :, :][0]
             Xcap = np.mean(target_data, 0)
-            filename = settings.USER + '_target'+ str(target_idx)
-            path = os.path.join(directory, filename + ".csv")
-            np.savetxt(path,Xcap,delimiter=",")
+            self.save_model(Xcap, target_idx)
+
+    def save_model(self, model, target_idx):
+        path = self.get_file_path(target_idx)
+        np.savetxt(path, model, delimiter=",")
 
     def load_model(self,target_idx):
-        directory = os.path.join('templates', settings.USER)
+        path = self.get_file_path(target_idx)
+        return np.loadtxt(path, delimiter=",")
+
+    def get_file_path(self, target_idx):
+        model_path = self.get_model_path()
         filename = settings.USER + '_target' + str(target_idx)
-        path = os.path.join(directory, filename + ".csv")
-        return np.loadtxt(path)
+        path = os.path.abspath(os.path.join(model_path, filename + ".csv"))
+        return path

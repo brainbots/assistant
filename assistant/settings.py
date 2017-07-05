@@ -4,7 +4,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# USER = "S1"
+USER = "S1"
 
 # === Keyboard Settings ===
 INITIAL_FONT = 40
@@ -65,9 +65,12 @@ AUTOCOMPLETE_BACKEND = "keyboard.autocomplete.backends.autocomplete.AutoComplete
 DATASET_PATH = os.path.join(BASE_DIR, 'keyboard/dataset_manager/Datasets')
 
 CLASSIFICATION_ALGORITHM = "keyboard.classification.cca.CCAClassifier"
+# CLASSIFICATION_ALGORITHM = "keyboard.classification.itcca.ITCCAClassifier"
 
+# TRAIN_CLASSIFIER = True
 TRAIN_CLASSIFIER = False
-#TODO define setting for path of training data
+
+MODELS_BASE_PATH = os.path.join(BASE_DIR, "keyboard/classification/models")
 
 # === NLP Settings ===
 
