@@ -35,9 +35,3 @@ class CCAClassifier(AbstractClassifier):
                 bestfreq = i
         return bestfreq
 
-    def load_model(self):
-        pass
-
-    def train(self, data , target):
-        pass
-

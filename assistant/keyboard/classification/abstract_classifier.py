@@ -15,15 +15,15 @@ class AbstractClassifier(ABC):
   def classify(self, sample):
     pass
 
-  @abstractmethod
+  # @abstractmethod
   def save_model(self, model):
     pass
 
-  @abstractmethod
+  # @abstractmethod
   def load_model(self):
       pass
 
-  @abstractmethod
+  # @abstractmethod
   def train(self, data):
     pass
 
