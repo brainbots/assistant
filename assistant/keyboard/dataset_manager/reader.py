@@ -59,4 +59,4 @@ def getUserDatasets(user,secs):
         datai, targeti = read(dataset, secs)
         data = np.concatenate((data,datai))
         target = np.concatenate((target,targeti))
-    return (data, target)
+    return {"data": data, "target": target}
