@@ -1,3 +1,8 @@
 [submodule "assistant/keyboard/dataset_manager/Datasets"]
 	path = assistant/keyboard/dataset_manager/Datasets
 	url = https://github.com/brainbots/Datasets.git
+	branch = master
+[submodule "assistant/bots/index"]
+	path = assistant/bots/index
+	url = git@github.com:brainbots/bots.git
+	branch = master
