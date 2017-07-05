@@ -1,12 +1,17 @@
 import numpy as np
 from keyboard.preprocessing import butter
 from keyboard.classification.abstract_classifier import AbstractClassifier
-from keyboard.dataset_manager.reader import getUserDatasets
+from keyboard.dataset_manager.reader import get_user_datasets
 from . import rcca
 import os
 import settings
 
 class ITCCAClassifier(AbstractClassifier):
+    def __init__(self, *args, **kwargs):
+        if settings.TRAIN_CLASSIFIER:
+            kwargs["data"] = get_user_datasets(settings.USER, settings.TIME_FLASH_SEC)
+        super(ITCCAClassifier, self).__init__(**kwargs)
+
     def classify(self,sample):
         sample = butter.filter(sample)
         freqs = np.array(self.freqs)

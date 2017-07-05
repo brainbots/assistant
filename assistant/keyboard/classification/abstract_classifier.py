@@ -7,9 +7,9 @@ class AbstractClassifier(ABC):
       self.freqs = freqs
       self.duration = duration
       if data:
-          self.data = data["data"]
-          self.target = data["target"]
-          self.train(self.data, self.target)
+        self.data = data["data"]
+        self.target = data["target"]
+        self.train(self.data, self.target)
 
   @abstractmethod
   def classify(self, sample):
@@ -24,7 +24,7 @@ class AbstractClassifier(ABC):
       pass
 
   # @abstractmethod
-  def train(self, data):
+  def train(self, data, target):
     pass
 
   def get_model_path(self):

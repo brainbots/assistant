@@ -4,7 +4,6 @@ from keyboard.autocomplete.autocomplete_manager import AutoCompleteManager
 from keyboard.input import device
 import settings
 from keyboard.classification import cca, itcca
-from keyboard.dataset_manager.reader import getUserDatasets
 from random import randint
 import importlib
 import traceback
@@ -36,6 +35,7 @@ class KeyboardManager(QObject):
     self.paused = False
     self.classifier = self.load_classifier()
     # self.old_data = getUserDatasets("S1",3)
+    # print(self.old_data)
 
     # predetermined sequence of choices for testing
     self.virtual_sequence = settings.VIRTUAL_SEQUENCE
@@ -49,11 +49,7 @@ class KeyboardManager(QObject):
     module = ".".join(module)
     module = importlib.import_module(module)
     classifier_class = getattr(module, classname)
-    if settings.TRAIN_CLASSIFIER:
-      training_data = getUserDatasets()
-    else:
-      training_data = None
-    return classifier_class(freqs=settings.FREQ, duration=settings.TIME_FLASH_SEC, data=training_data)
+    return classifier_class(freqs=settings.FREQ, duration=settings.TIME_FLASH_SEC)
 
   def begin_rest(self):
     QTimer.singleShot(settings.TIME_REST_SEC * 1000, Qt.PreciseTimer, self.device.collect)
