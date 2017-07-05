@@ -1,6 +1,7 @@
 from PyQt5.QtCore import Qt, QObject, QTimer, pyqtSignal
 from keyboard.ui.keyboard_window import KeyboardWindow
 from keyboard.autocomplete.autocomplete_manager import AutoCompleteManager
+from keyboard.autocomplete.backends.pyenchant import Enchant
 from keyboard.input import device
 import settings
 from keyboard.classification import cca, itcca
@@ -19,6 +20,7 @@ class KeyboardManager(QObject):
     self.keyboard_window.showFullScreen()
 
     self.autocomplete_manager = AutoCompleteManager()
+    self.autocorrect = Enchant()
     self.is_virtual = is_virtual
 
     self.keyboard_window.ui_reloaded_signal.connect(self.after_reload)
@@ -114,9 +116,17 @@ class KeyboardManager(QObject):
   def predict_word(self, query):
     print(query)
     try:
-      words = self.autocomplete_manager.complete(query)
-      print(words)
-      self.keyboard_window.receive_predicted_words(words)
+      word = query.rstrip().split(' ')[-1] 
+      print(word) 
+      # trigger auto-correct if the word ends with spaced and has a misspelling
+      if query.endswith(' ') and not self.autocorrect.check(word):
+        words = self.autocorrect.suggest(word)[0:2] + ['⌫'] 
+        print(words) 
+      else: 
+        words = self.autocomplete_manager.complete(query) 
+        print(words) 
+
+      self.keyboard_window.receive_predicted_words(words) 
     except Exception as e:
       # print(e)
       traceback.print_tb(e.__traceback__)
