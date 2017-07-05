@@ -46,13 +46,26 @@ def read(absolute_path, duration):
     return (samples, target)
 
 
-def getUserDatasets(user,secs):
-    absolute_directory_path = os.path.join(settings.DATASET_PATH, user)+os.sep
+def get_user_datasets(user,secs):
+    path = os.path.join(settings.DATASET_PATH, user)+os.sep
+
     datasets = []
+    for dirname in os.listdir(path):
+        datasets.append(os.path.join(path,dirname))
 
-    for dirname in os.listdir(absolute_directory_path):
-        datasets.append(os.path.join(absolute_directory_path,dirname))
+    return get_data(datasets, secs)
 
+def get_all_datasets(secs):
+    path = settings.DATASET_PATH + os.sep
+
+    datasets = []
+    for subject_dirname in [f for f in os.listdir(path) if not f.startswith('.')]:
+        for dirname in os.listdir(os.path.join(path, subject_dirname)):
+            datasets.append(os.path.join(path, subject_dirname, dirname))
+
+    return get_data(datasets, secs)
+
+def get_data(datasets, secs):
     data = np.empty([0,4,128*secs])
     target = np.empty([0])
     for dataset in datasets:
