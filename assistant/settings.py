@@ -88,12 +88,12 @@ FALLBACK_PROMPTS = [
 
 # Module path for each active bot
 REGISTERED_BOTS = [
-    'bots.index.calculator.CalculatorBot',
-    'bots.index.weather.WeatherBot',
-    'bots.index.chrome.ChromeBot',
-    'bots.index.mail.MailBot',
-    'bots.index.translator.TranslationBot'
-    # 'bots.index.search.SearchBot',
+    'bots.index.calculator.calculator.CalculatorBot',
+    'bots.index.weather.weather.WeatherBot',
+    'bots.index.search.chrome.ChromeBot',
+    'bots.index.mail.mail.MailBot',
+    'bots.index.translator.translator.TranslationBot'
+    # 'bots.index.search.search.SearchBot',
 ]
 
 TRANSLATOR_LANG_TO = "Arabic"
