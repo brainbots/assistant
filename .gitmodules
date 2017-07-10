@@ -4,5 +4,5 @@
 	branch = master
 [submodule "assistant/bots/index"]
 	path = assistant/bots/index
-	url = git@github.com:brainbots/bots.git
+	url = https://github.com/brainbots/bots.git
 	branch = master
