@@ -103,6 +103,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.wdg.setParent(None)
     self.wnd_container.deleteLater()
     self.wnd_container.setParent(None)
+    self.showChars()
 
   def resizeEmbbedWindow(self):
     parent_w, parent_h = self.centralWidget.width(), self.centralWidget.height()
@@ -200,6 +201,11 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     for i in range(self.max_interval):
       for j in range(self.max_interval):
         self.labels[i][j].hide()
+
+  def showChars(self):
+    for i in range(self.max_interval):
+      for j in range(self.max_interval):
+        self.labels[i][j].show()
 
   # reposition timer
   def resize_timer(self):
