@@ -193,7 +193,10 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
       self.target = result
       if self.autocomplete:
         QTimer.singleShot(1400, Qt.PreciseTimer, self.resetCharacters)
-      return self.labels[self.row][self.col].text(), self.autocomplete
+      char = self.labels[self.row][self.col].text()
+      if char == '␣': 
+        char = ' ' 
+      return char, self.autocomplete
     else:
       return False, False
 
