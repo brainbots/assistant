@@ -1,4 +1,5 @@
 import subprocess
+from time import sleep
 
 # criteria: dictionary that has key/values to match against.
 # e.g. {"wm_class": "Navigator.Firefox"}
@@ -10,6 +11,14 @@ def getWindow(criteria):
       return window
   return None
 
+#TODO: change to a generic version by passing a comparison function
+def waitForWindowByTitle(title):
+  while True:
+    windows = getAllWindows()
+    for xwindow in windows:
+      if title in xwindow['title']:
+        return xwindow
+    sleep(0.01)
 
 def getAllWindows():
   windows = []
