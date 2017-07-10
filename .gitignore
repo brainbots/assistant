@@ -8,3 +8,4 @@ dataset
 Pipfile
 Pipfile.lock
 assistant/secrets.py
+assistant/local_settings.py

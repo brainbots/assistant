@@ -92,7 +92,8 @@ REGISTERED_BOTS = [
     'bots.index.weather.weather.WeatherBot',
     'bots.index.search.chrome.ChromeBot',
     'bots.index.mail.mail.MailBot',
-    'bots.index.translator.translator.TranslationBot'
+    'bots.index.translator.translator.TranslationBot',
+    'bots.index.video.video.VideoBot',
     # 'bots.index.search.search.SearchBot',
 ]
 

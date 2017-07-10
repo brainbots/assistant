@@ -86,6 +86,7 @@ class KeyboardWindow(QMainWindow, Ui_KeyboardWindow):
     self.update()
     self.wdg.setParent(self)
     self.wdg.show()
+    self.wnd_container.move(0,0)
 
   def unembedWindow(self):
     # The embedded window is remove but the external process is still running.
