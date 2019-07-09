@@ -8,12 +8,13 @@ import traceback
 
 class Assistant(QObject):
 
-    def __init__(self, is_virtual, parent=None):
+    def __init__(self, is_virtual, flashing_only, parent=None):
         super(Assistant, self).__init__(parent)
 
         self.keyboard_manager = Keyboard.KeyboardManager(is_virtual)
-        self.nlp_manager = NLP.NlpManager()
-        self.bots_manager = Bots.BotManager()
+        if not flashing_only:
+        	self.nlp_manager = NLP.NlpManager()
+        	self.bots_manager = Bots.BotManager()
 
         self.keyboard_manager.direct_bot_command.connect(self.handle_direct_bot_commands)
         self.keyboard_manager.send_query_signal.connect(self.analyze_query)

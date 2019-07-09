@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import getopt
+import argparse
 import signal
 import sys
 from PyQt5.QtWidgets import QApplication
@@ -9,24 +9,18 @@ from PyQt5.QtCore import Qt, QTimer
 from assistant import Assistant
 
 if __name__ == '__main__':
-  try:
-    opts, args = getopt.getopt(sys.argv[1:], "", ['headset', 'virtual'])
-    if len(opts) == 0:
-      print("--headset or --virtual?")
-      sys.exit(2)
-    for opt in opts:
-      opt = opt[0]
-      if opt == '--headset':
-        is_virtual = False
-      elif opt == '--virtual' or opt == '--v':
-        is_virtual = True
-  except getopt.GetoptError as err:
-    print(err)
+  parser = argparse.ArgumentParser(description='Run the keyboard')
+  parser.add_argument('--headset', action='store_true', help='collect data from emotiv headset')
+  parser.add_argument('--virtual', '--vir', action='store_true', help='get random data')
+  parser.add_argument('--flashing_only', action='store_true', help='ignore the bots and nlp parts')
+  args = parser.parse_args()
+  if not (args.virtual or args.headset or args.flashing_only):
+    parser.print_help(sys.stderr)
     sys.exit(2)
 
   signal.signal(signal.SIGINT, signal.SIG_DFL)
   app = QApplication([])
   app.setOverrideCursor(Qt.BlankCursor)
 
-  main_manager = Assistant(is_virtual)
+  main_manager = Assistant(args.virtual, args.flashing_only)
   sys.exit(app.exec())

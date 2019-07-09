@@ -1,8 +1,7 @@
 import concurrent.futures as cf
 import time
 from PyQt5.QtCore import QObject, pyqtSignal
-from . import virtual, headset
-
+from . import virtual
 
 def run(read, collect_time):
   sample, quality = read(collect_time)
@@ -16,8 +15,12 @@ class Device(QObject):
     self.callback = callback
     self.virtual = is_virtual
     self.future = None
+    if not self.virtual:
+        from . import headset
+        self.read_func = headset.read
+    else:
+        self.read_func = virtual.read
     self.collect_time = collect_time
-    self.read_func = virtual.read if self.virtual else headset.read
     print("Device: open")
 
   def collect(self):
