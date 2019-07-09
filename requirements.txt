@@ -1,0 +1,9 @@
+apiai
+autocomplete
+emokit
+h5py
+numpy
+pyenchant
+PyQt5
+PyUserInput
+scipy
